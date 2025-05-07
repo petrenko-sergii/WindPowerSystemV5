@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WindPowerSystemV5.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -13,9 +13,12 @@ namespace WindPowerSystemV5.Server.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(
+            ILogger<WeatherForecastController> logger,
+            IConfiguration configuration)
         {
             _logger = logger;
+            var defaultLogLevel = configuration["Logging:LogLevel:Default"];
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
