@@ -19,7 +19,9 @@ public class CitiesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<City>>> GetCities()
     {
-        return await _context.Cities.ToListAsync();
+        return await _context.Cities
+            .Take(10000) //temp
+            .ToListAsync();
     }
 
     [HttpGet("{id}")]
