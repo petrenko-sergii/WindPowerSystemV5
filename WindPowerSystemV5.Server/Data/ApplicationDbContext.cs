@@ -24,6 +24,10 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<City> Cities => Set<City>();
+
     public DbSet<Country> Countries => Set<Country>();
 
+    public DbSet<TurbineType> TurbineTypes => Set<TurbineType>();
+
+    public DbSet<Turbine> Turbines => Set<Turbine>();
 }
