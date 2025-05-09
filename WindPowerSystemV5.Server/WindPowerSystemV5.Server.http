@@ -1,4 +1,4 @@
-@WindPowerSystemV5.Server_HostAddress = http://localhost:5082
+@WindPowerSystemV5.Server_HostAddress = http://localhost:40080
 
 GET {{WindPowerSystemV5.Server_HostAddress}}/weatherforecast/
 Accept: application/json
