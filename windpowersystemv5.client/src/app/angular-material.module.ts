@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -10,6 +11,7 @@ import { MatSortModule } from '@angular/material/sort';
   imports: [
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     MatToolbarModule,
     MatTableModule,
     MatPaginatorModule,
@@ -18,6 +20,7 @@ import { MatSortModule } from '@angular/material/sort';
   exports: [
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     MatToolbarModule,
     MatTableModule,
     MatPaginatorModule,
