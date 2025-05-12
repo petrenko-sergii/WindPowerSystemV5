@@ -13,6 +13,7 @@ import { HealthCheckComponent } from './health-check/health-check.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
+import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CountriesComponent } from './countries/countries.component';
     NavMenuComponent,
     HealthCheckComponent,
     CitiesComponent,
-    CountriesComponent
+    CountriesComponent,
+    TurbineTypesComponent
   ],
   imports: [
     BrowserModule,

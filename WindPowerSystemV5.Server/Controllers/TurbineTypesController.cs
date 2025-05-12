@@ -5,7 +5,7 @@ using WindPowerSystemV5.Server.Data;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/turbine-types")]
 [ApiController]
 public class TurbineTypesController : ControllerBase
 {
