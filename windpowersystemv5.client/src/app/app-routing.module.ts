@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'health-check', component: HealthCheckComponent },
   { path: 'cities', component: CitiesComponent },
   { path: 'city/:id', component: CityEditComponent },
+  { path: 'city', component: CityEditComponent },
   { path: 'countries', component: CountriesComponent },
   { path: 'turbine-types', component: TurbineTypesComponent },
   { path: 'turbines', component: TurbinesComponent }
