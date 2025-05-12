@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { environment } from './../../environments/environment';
 import { City } from './city';
+import { Country } from './../countries/country';
 
 @Component({
   selector: 'app-city-edit',
@@ -15,6 +16,7 @@ export class CityEditComponent implements OnInit {
   title?: string;
   form!: FormGroup;
   city?: City;
+  countries?: Country[];
 
   // the city object id, as fetched from the active route:
   // It's NULL when we're adding a new city,
@@ -31,12 +33,15 @@ export class CityEditComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl(''),
       lat: new FormControl(''),
-      lon: new FormControl('')
+      lon: new FormControl(''),
+      countryId: new FormControl('')
     });
     this.loadData();
   }
 
   loadData() {
+    this.loadCountries();
+
     var idParam = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = idParam ? +idParam : 0;
 
@@ -58,6 +63,21 @@ export class CityEditComponent implements OnInit {
     }
   }
 
+  loadCountries() {
+    var url = environment.baseUrl + 'api/Countries';
+    var params = new HttpParams()
+      .set("pageIndex", "0")
+      .set("pageSize", "9999")
+      .set("sortColumn", "name");
+
+    this.http.get<any>(url, { params }).subscribe({
+      next: (result) => {
+        this.countries = result.data;
+      },
+      error: (error) => console.error(error)
+    });
+  }
+
   onSubmit() {
     var city = (this.id) ? this.city : <City>{};
 
@@ -65,6 +85,7 @@ export class CityEditComponent implements OnInit {
       city.name = this.form.controls['name'].value;
       city.lat = +this.form.controls['lat'].value;
       city.lon = +this.form.controls['lon'].value;
+      city.countryId = +this.form.controls['countryId'].value;
 
       if (this.id) {
         // EDIT mode
