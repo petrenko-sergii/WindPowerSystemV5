@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AngularMaterialModule } from './angular-material.module';
@@ -15,6 +16,7 @@ import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
 import { TurbinesComponent } from './turbines/turbines.component';
+import { CityEditComponent } from './cities/city-edit.component';
 
 @NgModule({
   declarations: [
@@ -26,14 +28,16 @@ import { TurbinesComponent } from './turbines/turbines.component';
     CitiesComponent,
     CountriesComponent,
     TurbineTypesComponent,
-    TurbinesComponent
+    TurbinesComponent,
+    CityEditComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
