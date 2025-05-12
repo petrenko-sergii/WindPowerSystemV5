@@ -6,6 +6,7 @@ import { HealthCheckComponent } from './health-check/health-check.component';
 import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
+import { TurbinesComponent } from './turbines/turbines.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'health-check', component: HealthCheckComponent },
   { path: 'cities', component: CitiesComponent },
   { path: 'countries', component: CountriesComponent },
-  { path: 'turbine-types', component: TurbineTypesComponent }
+  { path: 'turbine-types', component: TurbineTypesComponent },
+  { path: 'turbines', component: TurbinesComponent }
 ];
 
 @NgModule({

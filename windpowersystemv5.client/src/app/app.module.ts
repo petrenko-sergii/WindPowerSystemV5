@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
+import { TurbinesComponent } from './turbines/turbines.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
     HealthCheckComponent,
     CitiesComponent,
     CountriesComponent,
-    TurbineTypesComponent
+    TurbineTypesComponent,
+    TurbinesComponent
   ],
   imports: [
     BrowserModule,
