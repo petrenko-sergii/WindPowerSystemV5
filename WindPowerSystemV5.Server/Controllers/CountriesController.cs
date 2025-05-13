@@ -101,6 +101,29 @@ public class CountriesController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost]
+    [Route("IsDupeField")]
+    public bool IsDupeField(
+        int countryId,
+        string fieldName,
+        string fieldValue)
+    {
+        switch (fieldName)
+        {
+            case "name":
+                return _context.Countries.Any(
+                c => c.Name == fieldValue && c.Id != countryId);
+            case "iso2":
+                return _context.Countries.Any(
+                    c => c.ISO2 == fieldValue && c.Id != countryId);
+            case "iso3":
+                return _context.Countries.Any(
+                c => c.ISO3 == fieldValue && c.Id != countryId);
+            default:
+                return false;
+        }
+    }
+
     private bool CountryExists(int id)
     {
         return _context.Countries.Any(e => e.Id == id);

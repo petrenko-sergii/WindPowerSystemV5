@@ -17,6 +17,7 @@ import { CountriesComponent } from './countries/countries.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
 import { TurbinesComponent } from './turbines/turbines.component';
 import { CityEditComponent } from './cities/city-edit.component';
+import { CountryEditComponent } from './countries/country-edit.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { CityEditComponent } from './cities/city-edit.component';
     CountriesComponent,
     TurbineTypesComponent,
     TurbinesComponent,
-    CityEditComponent
+    CityEditComponent,
+    CountryEditComponent
   ],
   imports: [
     BrowserModule,
