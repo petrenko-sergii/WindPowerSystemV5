@@ -19,6 +19,7 @@ import { TurbinesComponent } from './turbines/turbines.component';
 import { CityEditComponent } from './cities/city-edit.component';
 import { CountryEditComponent } from './countries/country-edit.component';
 import { TurbineEditComponent } from './turbines/turbine-edit.component';
+import { TurbineTypeEditComponent } from './turbine-types/turbine-type-edit.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { TurbineEditComponent } from './turbines/turbine-edit.component';
     TurbinesComponent,
     CityEditComponent,
     CountryEditComponent,
-    TurbineEditComponent
+    TurbineEditComponent,
+    TurbineTypeEditComponent
   ],
   imports: [
     BrowserModule,

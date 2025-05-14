@@ -1,5 +1,11 @@
 <h1>Turbine Types</h1>
 <p *ngIf="!turbineTypes"><em>Loading...</em></p>
+
+<button mat-flat-button color="primary"
+        class="btn-add" *ngIf="turbineTypes" [routerLink]="['/turbine-type']">
+  Add a new Turbine Type
+</button>
+
 <table mat-table [dataSource]="turbineTypes"
        class="mat-elevation-z8"
        [hidden]="!turbineTypes">
@@ -16,7 +22,9 @@
   <!-- Model Column -->
   <ng-container matColumnDef="model">
     <th mat-header-cell *matHeaderCellDef>Model</th>
-    <td mat-cell *matCellDef="let turbineType">{{turbineType.model}}</td>
+    <td mat-cell *matCellDef="let turbineType">
+      <a [routerLink]="['/turbine-type', turbineType.id]">{{turbineType.model}}</a>
+    </td>
   </ng-container>
   <!-- Capacity Column -->
   <ng-container matColumnDef="capacity">

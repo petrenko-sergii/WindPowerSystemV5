@@ -34,4 +34,47 @@ public class TurbineTypesController : ControllerBase
 
         return turbineType;
     }
+
+    [HttpPost]
+    public async Task<ActionResult<TurbineType>> Create(TurbineType turbineType)
+    {
+        _context.TurbineTypes.Add(turbineType);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(Get), new { id = turbineType.Id }, turbineType);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, TurbineType turbineType)
+    {
+        if (id != turbineType.Id)
+        {
+            return BadRequest();
+        }
+
+        _context.Entry(turbineType).State = EntityState.Modified;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!TurbineTypeExists(id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    private bool TurbineTypeExists(int id)
+    {
+        return _context.TurbineTypes.AsNoTracking().Any(e => e.Id == id);
+    }
 }
