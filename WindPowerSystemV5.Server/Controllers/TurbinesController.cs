@@ -73,6 +73,12 @@ public class TurbinesController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("statuses")]
+    public List<string> GetStatuses()
+    {
+        return Enum.GetNames(typeof(Data.Enums.TurbineStatus)).ToList();
+    }
+
     private bool TurbineExists(int id)
     {
         return _context.Turbines.AsNoTracking().Any(e => e.Id == id);

@@ -16,6 +16,7 @@ export class TurbineEditComponent implements OnInit {
   form!: FormGroup;
   turbine?: Turbine;
   turbineTypes?: TurbineType[];
+  statuses?: string[];
   id?: number;
 
   constructor(
@@ -36,7 +37,8 @@ export class TurbineEditComponent implements OnInit {
 
   loadData() {
     this.loadTurbineTypes();
-
+    this.loadStatuses();
+        
     var idParam = this.activatedRoute.snapshot.paramMap.get('id');
     this.id = idParam ? +idParam : 0;
 
@@ -64,6 +66,16 @@ export class TurbineEditComponent implements OnInit {
     this.http.get<TurbineType[]>(url).subscribe({
       next: (data) => {
         this.turbineTypes = data;
+      },
+      error: (error) => console.error(error)
+    });
+  }
+
+  loadStatuses() {
+    const url = environment.baseUrl + 'api/turbines/statuses';
+    this.http.get<string[]>(url).subscribe({
+      next: (data) => {
+        this.statuses = data;
       },
       error: (error) => console.error(error)
     });

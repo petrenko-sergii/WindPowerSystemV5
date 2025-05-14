@@ -17,14 +17,9 @@
     <mat-form-field>
       <mat-label>Status:</mat-label>
       <mat-select formControlName="status" required>
-        <mat-option value="Unknown">Unknown</mat-option>
-        <mat-option value="Installed">Installed</mat-option>
-        <mat-option value="Run">Run</mat-option>
-        <mat-option value="InService">InService</mat-option>
-        <mat-option value="CutOut">CutOut</mat-option>
-        <mat-option value="ReadyNoWind">ReadyNoWind</mat-option>
-        <mat-option value="Failed">Failed</mat-option>
-        <mat-option value="Disabled">Disabled</mat-option>
+        <mat-option *ngFor="let status of statuses" [value]="status">
+          {{status}}
+        </mat-option>
       </mat-select>
       <mat-error *ngIf="form.controls['status'].errors?.['required']">
         Status is required.
