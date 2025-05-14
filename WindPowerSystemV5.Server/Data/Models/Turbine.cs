@@ -16,14 +16,14 @@ public class Turbine
     public string SerialNumber { get; set; } = string.Empty;
 
     [Required]
-    [MaxLength(32)]
+    //[MaxLength(32)]
     public TurbineStatus Status { get; set; }
 
     [Required]
     public int TurbineTypeId { get; set; }
 
     [ForeignKey(nameof(TurbineTypeId))]
-    public TurbineType TurbineType { get; set; } = null!;
+    public TurbineType? TurbineType { get; set; }
 }
 
 public class TurbineConfiguration : IEntityTypeConfiguration<Turbine>

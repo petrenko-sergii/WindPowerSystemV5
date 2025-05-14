@@ -1,6 +1,11 @@
 <h1>Turbines</h1>
 <p *ngIf="!turbines"><em>Loading...</em></p>
 
+<button mat-flat-button color="primary"
+        class="btn-add" *ngIf="turbines" [routerLink]="['/turbine']">
+  Add a new Turbine
+</button>
+
 <table mat-table [dataSource]="turbines"
        class="mat-elevation-z8"
        [hidden]="!turbines">
@@ -12,7 +17,9 @@
   <!-- Serial Number Column -->
   <ng-container matColumnDef="serialNumber">
     <th mat-header-cell *matHeaderCellDef>Serial Number</th>
-    <td mat-cell *matCellDef="let turbine">{{turbine.serialNumber}}</td>
+    <td mat-cell *matCellDef="let turbine">
+      <a [routerLink]="['/turbine', turbine.id]">{{turbine.serialNumber}}</a>
+    </td>
   </ng-container>
   <!-- Status Column -->
   <ng-container matColumnDef="status">

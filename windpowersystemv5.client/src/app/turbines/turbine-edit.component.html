@@ -1,0 +1,58 @@
+<div class="turbine-edit">
+  <h1>{{title}}</h1>
+  <p *ngIf="id && !turbine"><em>Loading...</em></p>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <!-- Serial Number -->
+    <mat-form-field>
+      <mat-label>Serial Number:</mat-label>
+      <input matInput formControlName="serialNumber" required
+             placeholder="Type a serial number">
+      <mat-error *ngIf="form.controls['serialNumber'].errors?.['required']">
+        Serial Number is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Status -->
+    <mat-form-field>
+      <mat-label>Status:</mat-label>
+      <mat-select formControlName="status" required>
+        <mat-option value="Unknown">Unknown</mat-option>
+        <mat-option value="Installed">Installed</mat-option>
+        <mat-option value="Run">Run</mat-option>
+        <mat-option value="InService">InService</mat-option>
+        <mat-option value="CutOut">CutOut</mat-option>
+        <mat-option value="ReadyNoWind">ReadyNoWind</mat-option>
+        <mat-option value="Failed">Failed</mat-option>
+        <mat-option value="Disabled">Disabled</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls['status'].errors?.['required']">
+        Status is required.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Turbine Type -->
+    <mat-form-field *ngIf="turbineTypes">
+      <mat-label>Select a Turbine Type...</mat-label>
+      <mat-select id="turbineTypeId" formControlName="turbineTypeId">
+        <mat-option *ngFor="let type of turbineTypes"
+                    [value]="type.id">
+          {{type.manufacturer}} - {{type.model}} ({{type.capacity}} kW)
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.controls['turbineTypeId'].errors?.['required']">
+        Please select a Turbine Type.
+      </mat-error>
+    </mat-form-field>
+
+    <div>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid">
+        {{ this.id ? "Save" : "Create" }}
+      </button>
+      <button mat-flat-button color="secondary"
+              [routerLink]="['/turbines']">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,5 +1,6 @@
 global using WindPowerSystemV5.Server;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using WindPowerSystemV5.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,12 @@ builder.Services.AddHealthChecks()
     .AddCheck("ICMP_02", new ICMPHealthCheck("www.google.com", 100))
     .AddCheck("ICMP_03", new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

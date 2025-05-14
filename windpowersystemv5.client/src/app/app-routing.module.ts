@@ -9,6 +9,7 @@ import { CountriesComponent } from './countries/countries.component';
 import { CountryEditComponent } from './countries/country-edit.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
 import { TurbinesComponent } from './turbines/turbines.component';
+import { TurbineEditComponent } from './turbines/turbine-edit.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -21,7 +22,9 @@ const routes: Routes = [
   { path: 'country/:id', component: CountryEditComponent },
   { path: 'country', component: CountryEditComponent },
   { path: 'turbine-types', component: TurbineTypesComponent },
-  { path: 'turbines', component: TurbinesComponent }
+  { path: 'turbines', component: TurbinesComponent },
+  { path: 'turbine/:id', component: TurbineEditComponent },
+  { path: 'turbine', component: TurbineEditComponent }
 ];
 
 @NgModule({
