@@ -17,9 +17,18 @@ public class TurbineTypesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TurbineType>>> Get()
+    public async Task<ActionResult<IEnumerable<TurbineTypeDTO>>> Get()
     {
-        return await _context.TurbineTypes.ToListAsync();
+        return await _context.TurbineTypes
+            .Select(t => new TurbineTypeDTO
+            {
+                Id = t.Id,
+                Manufacturer = t.Manufacturer,
+                Model = t.Model,
+                Capacity = t.Capacity,
+                TurbineQty = t.Turbines!.Count
+            })
+            .ToListAsync();
     }
 
     [HttpGet("{id}")]

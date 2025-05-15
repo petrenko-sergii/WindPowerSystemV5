@@ -3,4 +3,5 @@ export interface TurbineType {
   manufacturer: string;
   model: string;
   capacity: number;
+  turbineQty: number;
 }

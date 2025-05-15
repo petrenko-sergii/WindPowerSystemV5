@@ -8,7 +8,7 @@ import { TurbineType } from './turbine-type';
   styleUrl: './turbine-types.component.scss'
 })
 export class TurbineTypesComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'manufacturer', 'model', 'capacity'];
+  displayedColumns: string[] = ['id', 'manufacturer', 'model', 'capacity', 'turbineQty'];
   public turbineTypes!: TurbineType[];
 
   private readonly apiUrl = 'api/turbine-types'; // Base URL for the API

@@ -17,4 +17,6 @@ public class TurbineType
 
     [Required]
     public float Capacity { get; set; }
+
+    public ICollection<Turbine>? Turbines { get; set; }
 }
