@@ -9,11 +9,13 @@
 <table mat-table [dataSource]="turbines"
        class="mat-elevation-z8"
        [hidden]="!turbines">
+
   <!-- Id Column -->
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>ID</th>
     <td mat-cell *matCellDef="let turbine">{{turbine.id}}</td>
   </ng-container>
+
   <!-- Serial Number Column -->
   <ng-container matColumnDef="serialNumber">
     <th mat-header-cell *matHeaderCellDef>Serial Number</th>
@@ -21,11 +23,23 @@
       <a [routerLink]="['/turbine', turbine.id]">{{turbine.serialNumber}}</a>
     </td>
   </ng-container>
+
   <!-- Status Column -->
   <ng-container matColumnDef="status">
     <th mat-header-cell *matHeaderCellDef>Status</th>
     <td mat-cell *matCellDef="let turbine">{{turbine.status}}</td>
   </ng-container>
+
+  <!-- Type Info Column -->
+  <ng-container matColumnDef="typeInfo">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let turbine">
+      <a [routerLink]="['/turbine-type', turbine.turbineTypeId]">
+        {{ turbine.manufacturer }}/{{ turbine.model }}
+      </a>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

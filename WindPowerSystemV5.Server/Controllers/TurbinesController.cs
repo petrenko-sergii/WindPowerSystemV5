@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data;
+using WindPowerSystemV5.Server.Data.Models;
+using WindPowerSystemV5.Server.Data.DTOs;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -17,9 +18,19 @@ public class TurbinesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Turbine>>> Get()
+    public async Task<ActionResult<IEnumerable<TurbineDTO>>> Get()
     {
-        return await _context.Turbines.ToListAsync();
+        return await _context.Turbines
+            .Select(t => new TurbineDTO
+            {
+                Id = t.Id,
+                SerialNumber = t.SerialNumber,
+                Status = t.Status.ToString(),
+                TurbineTypeId = t.TurbineTypeId,
+                Manufacturer = t.TurbineType!.Manufacturer,
+                Model = t.TurbineType!.Model
+            })
+            .ToListAsync();
     }
 
     [HttpGet("{id}")]

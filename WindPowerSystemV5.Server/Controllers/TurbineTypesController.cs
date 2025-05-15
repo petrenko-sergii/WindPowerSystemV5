@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data;
+using WindPowerSystemV5.Server.Data.Models;
+using WindPowerSystemV5.Server.Data.DTOs;
 
 namespace WindPowerSystemV5.Server.Controllers;
 

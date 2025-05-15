@@ -3,4 +3,6 @@ export interface Turbine {
   serialNumber: string;
   status: string;
   turbineTypeId: number;
+  manufacturer: string;
+  model: string;
 }

@@ -8,7 +8,7 @@ import { Turbine } from './turbine';
   styleUrl: './turbines.component.scss'
 })
 export class TurbinesComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'serialNumber', 'status'];
+  displayedColumns: string[] = ['id', 'serialNumber', 'status', 'typeInfo'];
   public turbines!: Turbine[];
   private readonly apiUrl = 'api/Turbines';
 

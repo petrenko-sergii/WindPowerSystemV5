@@ -1,3 +1,5 @@
+namespace WindPowerSystemV5.Server.Data.DTOs;
+
 public class TurbineTypeDTO
 {
     public int Id { get; set; }
