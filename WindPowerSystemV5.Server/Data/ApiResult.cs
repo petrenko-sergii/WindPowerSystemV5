@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
+using EFCore.BulkExtensions;
 
 namespace WindPowerSystemV5.Server.Data;
 
@@ -75,6 +76,11 @@ public class ApiResult<T>
         source = source
             .Skip(pageIndex * pageSize)
             .Take(pageSize);
+
+#if DEBUG
+        // retrieve the SQL query (for debug purposes)
+        var sql = source.ToParametrizedSql();
+#endif
 
         var data = await source.ToListAsync();
 
