@@ -34,6 +34,6 @@ export abstract class BaseFormComponent {
     return errors;
   }
 
-  constructor() { }
-
+  constructor() {
+  }
 }

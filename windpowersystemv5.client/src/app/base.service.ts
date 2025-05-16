@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
+import { ApiResult } from './api-result';
 
 export abstract class BaseService<T> {
   constructor(
@@ -22,16 +23,4 @@ export abstract class BaseService<T> {
   protected getUrl(url: string) {
     return environment.baseUrl + url;
   }
-}
-
-export interface ApiResult<T> {
-  data: T[];
-  pageIndex: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
-  sortColumn: string;
-  sortOrder: string;
-  filterColumn: string;
-  filterQuery: string;
 }

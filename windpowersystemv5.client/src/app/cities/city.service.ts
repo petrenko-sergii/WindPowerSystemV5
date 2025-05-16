@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BaseService, ApiResult } from '../base.service';
+import { BaseService } from '../base.service';
 import { Observable } from 'rxjs';
 
 import { City } from './city';
 import { Country } from '../countries/country';
+import { ApiResult } from '../api-result';
 
 @Injectable({
   providedIn: 'root',
