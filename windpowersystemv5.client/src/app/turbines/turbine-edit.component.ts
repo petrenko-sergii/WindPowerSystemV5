@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { environment } from './../../environments/environment';
 import { Turbine } from './turbine';
 import { TurbineType } from './../turbine-types/turbine-type';
+import { TurbineService } from './turbine.service';
 
 @Component({
   selector: 'app-turbine-edit',
@@ -22,7 +21,7 @@ export class TurbineEditComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private http: HttpClient) {
+    private turbineService: TurbineService) {
   }
 
   ngOnInit() {
@@ -44,8 +43,7 @@ export class TurbineEditComponent implements OnInit {
 
     if (this.id) {
       // EDIT MODE
-      var url = environment.baseUrl + 'api/Turbines/' + this.id;
-      this.http.get<Turbine>(url).subscribe({
+      this.turbineService.get(this.id).subscribe({
         next: (result) => {
           this.turbine = result;
           this.title = "Edit turbine: " + this.turbine.serialNumber;
@@ -61,9 +59,7 @@ export class TurbineEditComponent implements OnInit {
   }
 
   loadTurbineTypes() {
-    var url = environment.baseUrl + 'api/turbine-types';
-
-    this.http.get<TurbineType[]>(url).subscribe({
+    this.turbineService.getTurbineTypes().subscribe({
       next: (data) => {
         this.turbineTypes = data;
       },
@@ -72,8 +68,7 @@ export class TurbineEditComponent implements OnInit {
   }
 
   loadStatuses() {
-    const url = environment.baseUrl + 'api/turbines/statuses';
-    this.http.get<string[]>(url).subscribe({
+    this.turbineService.loadStatuses().subscribe({
       next: (data) => {
         this.statuses = data;
       },
@@ -91,9 +86,7 @@ export class TurbineEditComponent implements OnInit {
 
       if (this.id) {
         // EDIT mode
-        var url = environment.baseUrl + 'api/Turbines/' + turbine.id;
-        this.http
-          .put<Turbine>(url, turbine)
+        this.turbineService.put(turbine)
           .subscribe({
             next: (result) => {
               console.log("Turbine " + turbine!.id + " has been updated.");
@@ -104,9 +97,7 @@ export class TurbineEditComponent implements OnInit {
       }
       else {
         // ADD NEW mode
-        var url = environment.baseUrl + 'api/Turbines';
-        this.http
-          .post<Turbine>(url, turbine)
+        this.turbineService.post(turbine)
           .subscribe({
             next: (result) => {
               console.log("Turbine " + result.id + " has been created.");

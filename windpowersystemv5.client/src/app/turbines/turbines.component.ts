@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Turbine } from './turbine';
+import { TurbineService } from './turbine.service';
 
 @Component({
   selector: 'app-turbines',
@@ -10,16 +10,15 @@ import { Turbine } from './turbine';
 export class TurbinesComponent implements OnInit {
   displayedColumns: string[] = ['id', 'serialNumber', 'status', 'typeInfo'];
   public turbines!: Turbine[];
-  private readonly apiUrl = 'api/Turbines';
 
-  constructor(private http: HttpClient) {}
+  constructor(private turbineService: TurbineService) {}
 
   ngOnInit(): void {
     this.loadTurbines();
   }
 
   private loadTurbines(): void {
-    this.http.get<Turbine[]>(this.apiUrl).subscribe({
+    this.turbineService.getData().subscribe({
       next: (data) => {
         this.turbines = data;
       },
