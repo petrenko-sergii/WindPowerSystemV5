@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { environment } from './../../environments/environment';
 import { TurbineType } from './turbine-type';
+import { TurbineTypeService } from './turbine-type.service';
 
 @Component({
   selector: 'app-turbine-type-edit',
@@ -19,7 +18,7 @@ export class TurbineTypeEditComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private turbineTypeService: TurbineTypeService
   ) {}
 
   ngOnInit() {
@@ -38,8 +37,7 @@ export class TurbineTypeEditComponent implements OnInit {
 
     if (this.id) {
       // EDIT MODE
-      const url = environment.baseUrl + 'api/turbine-types/' + this.id;
-      this.http.get<TurbineType>(url).subscribe({
+      this.turbineTypeService.get(this.id).subscribe({
         next: (result) => {
           this.turbineType = result;
           this.title = "Edit - " + this.turbineType.model;
@@ -63,8 +61,7 @@ export class TurbineTypeEditComponent implements OnInit {
 
       if (this.id) {
         // EDIT mode
-        const url = environment.baseUrl + 'api/turbine-types/' + turbineType.id;
-        this.http.put<TurbineType>(url, turbineType).subscribe({
+        this.turbineTypeService.put(turbineType).subscribe({
           next: () => {
             console.log("Turbine type " + turbineType!.id + " has been updated.");
             this.router.navigate(['/turbine-types']);
@@ -73,8 +70,7 @@ export class TurbineTypeEditComponent implements OnInit {
         });
       } else {
         // ADD NEW mode
-        const url = environment.baseUrl + 'api/turbine-types/';
-        this.http.post<TurbineType>(url, turbineType).subscribe({
+        this.turbineTypeService.post(turbineType).subscribe({
           next: (result) => {
             console.log("Turbine type " + result.id + " has been created.");
             this.router.navigate(['/turbine-types']);

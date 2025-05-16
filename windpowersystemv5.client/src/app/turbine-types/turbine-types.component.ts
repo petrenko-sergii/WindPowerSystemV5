@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { TurbineType } from './turbine-type';
+import { TurbineTypeService } from './turbine-type.service';
 
 @Component({
   selector: 'app-turbine-types',
@@ -11,16 +11,16 @@ export class TurbineTypesComponent implements OnInit {
   displayedColumns: string[] = ['id', 'manufacturer', 'model', 'capacity', 'turbineQty'];
   public turbineTypes!: TurbineType[];
 
-  private readonly apiUrl = 'api/turbine-types'; // Base URL for the API
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private turbineTypeService: TurbineTypeService) {
+  }
 
   ngOnInit(): void {
     this.loadTurbineTypes();
   }
 
   private loadTurbineTypes(): void {
-    this.http.get<TurbineType[]>(this.apiUrl).subscribe({
+    this.turbineTypeService.getData().subscribe({
       next: (data) => {
         this.turbineTypes = data;
       },
