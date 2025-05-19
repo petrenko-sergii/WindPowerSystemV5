@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 
 import { City } from './city';
 import { Country } from './../countries/country';
@@ -16,10 +16,12 @@ import { CityService } from './city.service';
 })
 
 export class CityEditComponent
-  extends BaseFormComponent implements OnInit {
+  extends BaseFormComponent implements OnInit, OnDestroy {
   title?: string;
   city?: City;
-  countries?: Country[];
+
+  // the countries observable for the select (using async pipe)
+  countries?: Observable<Country[]>;
 
   // the city object id, as fetched from the active route:
   // It's NULL when we're adding a new city,
@@ -28,6 +30,8 @@ export class CityEditComponent
 
   // Activity Log (for debugging purposes)
   activityLog: string = '';
+
+  private destroySubject = new Subject();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -52,6 +56,7 @@ export class CityEditComponent
 
     // react to form changes (for debugging purposes)
     this.form.valueChanges
+      .pipe(takeUntil(this.destroySubject))
       .subscribe(() => {
         if (!this.form.dirty) {
           this.log("Form Model has been loaded.");
@@ -62,6 +67,7 @@ export class CityEditComponent
       });
 
     this.form.get("name")!.valueChanges
+      .pipe(takeUntil(this.destroySubject))
       .subscribe(() => {
         if (!this.form.dirty) {
           this.log("Name has been loaded with initial values.");
@@ -75,9 +81,10 @@ export class CityEditComponent
   }
 
   log(str: string) {
-    this.activityLog += "["
-      + new Date().toLocaleString()
-      + "] " + str + "<br />";
+    const logMessage = "[" + new Date().toLocaleString() + "] " + str;
+
+    this.activityLog += logMessage + "<br />";
+    console.log(logMessage);
   }
 
   loadData() {
@@ -107,18 +114,15 @@ export class CityEditComponent
     let pageIndex = 0;
     let pageSize = 9999;
 
-    this.cityService.getCountries(
-      pageIndex,
-      pageSize,
-      "name",
-      "asc",
-      null,
-      null).subscribe({
-      next: (result) => {
-        this.countries = result.data;
-      },
-      error: (error) => console.error(error)
-    });
+    this.countries = this.cityService
+      .getCountries(
+        pageIndex,
+        pageSize,
+        "name",
+        "asc",
+        null,
+        null)
+      .pipe(map(x => x.data));
   }
 
   onSubmit() {
@@ -171,5 +175,12 @@ export class CityEditComponent
           return (result ? { isDupeCity: true } : null);
       }));
     }
+  }
+
+  ngOnDestroy() {
+    // emit a value with the takeUntil notifier
+    this.destroySubject.next(true);
+    // complete the subject
+    this.destroySubject.complete();
   }
 }
