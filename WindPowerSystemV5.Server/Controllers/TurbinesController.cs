@@ -11,10 +11,14 @@ namespace WindPowerSystemV5.Server.Controllers;
 public class TurbinesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    
+    public ILogger<TurbinesController> Logger { get; set; }
 
-    public TurbinesController(ApplicationDbContext context)
+    public TurbinesController(ApplicationDbContext context, ILogger<TurbinesController> logger)
     {
         _context = context;
+        Logger = logger;
+        Logger.LogInformation("TurbinesController initialized.");
     }
 
     [HttpGet]
