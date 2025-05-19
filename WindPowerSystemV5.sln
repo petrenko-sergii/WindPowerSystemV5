@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "windpowersystemv5.client", "windpowersystemv5.client\windpowersystemv5.client.esproj", "{57E82E55-9E03-F93B-7E5E-71C58EDC58D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindPowerSystemV5.Server", "WindPowerSystemV5.Server\WindPowerSystemV5.Server.csproj", "{1AB942D2-7574-41FB-95A5-DAB15D597DD7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindPowerSystemV5.Server.Tests", "WindPowerSystemV5.Server.Tests\WindPowerSystemV5.Server.Tests.csproj", "{1AA2996F-EEC9-2CFE-FAF7-DA372C481F4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{1AB942D2-7574-41FB-95A5-DAB15D597DD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AB942D2-7574-41FB-95A5-DAB15D597DD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1AB942D2-7574-41FB-95A5-DAB15D597DD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AA2996F-EEC9-2CFE-FAF7-DA372C481F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AA2996F-EEC9-2CFE-FAF7-DA372C481F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AA2996F-EEC9-2CFE-FAF7-DA372C481F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AA2996F-EEC9-2CFE-FAF7-DA372C481F4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
