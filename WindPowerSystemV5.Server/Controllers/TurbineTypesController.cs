@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WindPowerSystemV5.Server.Data;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -50,6 +51,7 @@ public class TurbineTypesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "RegisteredUser")]
     public async Task<ActionResult<TurbineType>> Create(TurbineType turbineType)
     {
         _context.TurbineTypes.Add(turbineType);
@@ -59,6 +61,7 @@ public class TurbineTypesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "RegisteredUser")]
     public async Task<IActionResult> Update(int id, TurbineType turbineType)
     {
         if (id != turbineType.Id)

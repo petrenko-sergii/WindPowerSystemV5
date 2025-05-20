@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data;
 using WindPowerSystemV5.Server.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -59,6 +60,7 @@ public class CitiesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "RegisteredUser")]
     public async Task<IActionResult> PutCity(int id, City city)
     {
         if (id != city.Id)
@@ -88,6 +90,7 @@ public class CitiesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "RegisteredUser")]
     public async Task<ActionResult<City>> PostCity(City city)
     {
         _context.Cities.Add(city);
@@ -97,6 +100,7 @@ public class CitiesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteCity(int id)
     {
         var city = await _context.Cities.FindAsync(id);

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data;
 using WindPowerSystemV5.Server.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -58,6 +59,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "RegisteredUser")]
     public async Task<IActionResult> PutCountry(int id, Country country)
     {
         if (id != country.Id)
@@ -87,6 +89,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "RegisteredUser")]
     public async Task<ActionResult<Country>> PostCountry(Country country)
     {
         _context.Countries.Add(country);
@@ -96,6 +99,7 @@ public class CountriesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteCountry(int id)
     {
         var country = await _context.Countries.FindAsync(id);
