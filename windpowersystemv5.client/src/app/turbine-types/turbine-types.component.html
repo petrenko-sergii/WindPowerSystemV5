@@ -2,7 +2,7 @@
 <p *ngIf="!turbineTypes"><em>Loading...</em></p>
 
 <button mat-flat-button color="primary"
-        class="btn-add" *ngIf="turbineTypes" [routerLink]="['/turbine-type']">
+        class="btn-add" *ngIf="turbineTypes && isAuthenticated" [routerLink]="['/turbine-type']">
   Add a new Turbine Type
 </button>
 

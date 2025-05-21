@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { TurbinesComponent } from './turbines.component';
 import { Turbine } from './turbine';
 import { TurbineService } from './turbine.service';
+import { AuthService } from '../auth/auth.service';
 
 describe('TurbinesComponent', () => {
   let component: TurbinesComponent;
@@ -22,6 +23,10 @@ describe('TurbinesComponent', () => {
       ])
     );
 
+    // Create a mock AuthService with isAuthenticated method
+    let authService = jasmine.createSpyObj<AuthService>('AuthService', ['isAuthenticated']);
+    authService.isAuthenticated.and.returnValue(true);
+
     await TestBed.configureTestingModule({
       declarations: [TurbinesComponent],
       imports: [
@@ -30,10 +35,8 @@ describe('TurbinesComponent', () => {
         RouterTestingModule
       ],
       providers: [
-        {
-          provide: TurbineService,
-          useValue: turbineServiceSpy
-        }
+        { provide: TurbineService, useValue: turbineServiceSpy },
+        { provide: AuthService, useValue: authService }
       ]
     }).compileComponents();
   });

@@ -8,6 +8,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { Country } from './country';
 import { CountryService } from './country.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-countries',
@@ -32,7 +33,8 @@ export class CountriesComponent implements OnInit {
   filterTextChanged: Subject<string> = new Subject<string>();
 
   constructor(
-    private countryService: CountryService) {
+    private countryService: CountryService,
+    private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -93,5 +95,9 @@ export class CountriesComponent implements OnInit {
         },
         error: (error) => console.error(error)
       });
+  }
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
   }
 }

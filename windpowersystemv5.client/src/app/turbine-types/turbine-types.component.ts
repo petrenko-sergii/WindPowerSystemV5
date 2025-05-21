@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TurbineType } from './turbine-type';
 import { TurbineTypeService } from './turbine-type.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-turbine-types',
@@ -12,11 +13,16 @@ export class TurbineTypesComponent implements OnInit {
   public turbineTypes!: TurbineType[];
 
   constructor(
-    private turbineTypeService: TurbineTypeService) {
+    private turbineTypeService: TurbineTypeService,
+    private authService: AuthService) {
   }
 
   ngOnInit(): void {
     this.loadTurbineTypes();
+  }
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
   }
 
   private loadTurbineTypes(): void {
