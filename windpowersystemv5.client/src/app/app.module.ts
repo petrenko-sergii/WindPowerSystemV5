@@ -1,4 +1,5 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth/auth.interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ import { CityEditComponent } from './cities/city-edit.component';
 import { CountryEditComponent } from './countries/country-edit.component';
 import { TurbineEditComponent } from './turbines/turbine-edit.component';
 import { TurbineTypeEditComponent } from './turbine-types/turbine-type-edit.component';
+import { LoginComponent } from './auth/login.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { TurbineTypeEditComponent } from './turbine-types/turbine-type-edit.comp
     CityEditComponent,
     CountryEditComponent,
     TurbineEditComponent,
-    TurbineTypeEditComponent
+    TurbineTypeEditComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +48,13 @@ import { TurbineTypeEditComponent } from './turbine-types/turbine-type-edit.comp
     AngularMaterialModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
