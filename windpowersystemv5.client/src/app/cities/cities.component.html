@@ -2,7 +2,7 @@
 <p *ngIf="!cities"><em>Loading...</em></p>
 
 <button mat-flat-button color="primary"
-        class="btn-add" *ngIf="cities" [routerLink]="['/city']">
+        class="btn-add" *ngIf="cities && isAuthenticated" [routerLink]="['/city']">
   Add a new City
 </button>
 

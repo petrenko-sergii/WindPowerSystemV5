@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
+import { AuthService } from '../auth/auth.service';
 import { City } from './city';
 import { CityService } from './city.service';
 
@@ -31,7 +32,9 @@ export class CitiesComponent implements OnInit {
 
   filterTextChanged: Subject<string> = new Subject<string>();
 
-  constructor(private cityService: CityService) {
+  constructor(
+    private cityService: CityService,
+    private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -92,5 +95,9 @@ export class CitiesComponent implements OnInit {
         },
         error: (error) => console.error(error)
       });
+  }
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
   }
 }

@@ -8,6 +8,7 @@ import { CitiesComponent } from './cities.component';
 import { City } from './city';
 import { CityService } from './city.service';
 import { ApiResult } from '../api-result';
+import { AuthService } from '../auth/auth.service';
 
 describe('CitiesComponent', () => {
   let component: CitiesComponent;
@@ -44,6 +45,10 @@ describe('CitiesComponent', () => {
         pageSize: 10
       }));
 
+    // Create a mock AuthService with isAuthenticated method
+    let authService = jasmine.createSpyObj<AuthService>('AuthService', ['isAuthenticated']);
+    authService.isAuthenticated.and.returnValue(true);
+
     await TestBed.configureTestingModule({
       declarations: [CitiesComponent],
       imports: [
@@ -52,10 +57,8 @@ describe('CitiesComponent', () => {
         RouterTestingModule
       ],
       providers: [
-        {
-          provide: CityService,
-          useValue: cityService
-        }
+        { provide: CityService, useValue: cityService },
+        { provide: AuthService, useValue: authService }
       ]
     })
       .compileComponents();
