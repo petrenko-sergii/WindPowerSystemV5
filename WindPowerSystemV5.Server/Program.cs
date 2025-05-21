@@ -59,6 +59,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
 })
+    /*Identity API endpoints, a new set of auth-related endpoints introduced
+    with.NET 8 that can be used by SPAs to obtain the access tokens required to grant authentication
+    and authorization rights—a feature that looks promising but still too lacking to be used in production.
+    Currently, the Identity API endpoints are not fully functional and are not recommended for production use.*/
+    //.AddApiEndpoints()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<JwtHandler>();
@@ -105,6 +110,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHealthChecks(new PathString("/api/health"), new CustomHealthCheckOptions());
+
+// To enable Identity API endpoints
+//app.MapIdentityApi<ApplicationUser>();
+
 app.MapControllers();
 
 app.MapFallbackToFile("/index.html");
