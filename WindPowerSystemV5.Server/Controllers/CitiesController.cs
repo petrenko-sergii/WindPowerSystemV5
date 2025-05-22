@@ -115,21 +115,21 @@ public class CitiesController : ControllerBase
         return NoContent();
     }
 
-    private bool CityExists(int id)
-    {
-        return _context.Cities.AsNoTracking().Any(e => e.Id == id);
-    }
-
     [HttpPost]
     [Route("IsDupeCity")]
     public bool IsDupeCity(City city)
     {
         return _context.Cities.AsNoTracking().Any(
-            e => e.Name == city.Name
-            && e.Lat == city.Lat
-            && e.Lon == city.Lon
-            && e.CountryId == city.CountryId
-            && e.Id != city.Id
+            c => c.Name == city.Name
+            && c.Lat == city.Lat
+            && c.Lon == city.Lon
+            && c.CountryId == city.CountryId
+            && c.Id != city.Id
         );
+    }
+
+    private bool CityExists(int id)
+    {
+        return _context.Cities.AsNoTracking().Any(e => e.Id == id);
     }
 }
