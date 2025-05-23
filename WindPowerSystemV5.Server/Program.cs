@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using WindPowerSystemV5.Server.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using WindPowerSystemV5.Server.Data.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +77,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<JwtHandler>();
 
+builder.Services.AddGraphQLServer()
+    .AddAuthorization()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
+    .AddFiltering()
+    .AddSorting();
+
 // Register JwtBearerMiddleware
 builder.Services.AddAuthentication(opt =>
     {
@@ -125,6 +133,8 @@ app.UseHealthChecks(new PathString("/api/health"), new CustomHealthCheckOptions(
 //app.MapIdentityApi<ApplicationUser>();
 
 app.MapControllers();
+
+app.MapGraphQL("/api/graphql");
 
 // Minimal API (it is necessary for FE to verify that BE is online)
 app.MapMethods("/api/heartbeat", new[] { "HEAD" },
