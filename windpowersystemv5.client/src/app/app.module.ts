@@ -24,6 +24,7 @@ import { TurbineTypeEditComponent } from './turbine-types/turbine-type-edit.comp
 import { LoginComponent } from './auth/login.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ConnectionServiceModule } from 'ng-connection-service';
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ConnectionServiceModule } from 'ng-connection-service';
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
-    })
+    }),
+    GraphQLModule
   ],
   providers: [
     {
