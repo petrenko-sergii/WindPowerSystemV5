@@ -10,6 +10,7 @@ using WindPowerSystemV5.Server.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WindPowerSystemV5.Server.Data.GraphQL;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,8 @@ builder.Services.AddCors(options =>
             cfg.AllowAnyMethod();
             cfg.WithOrigins(builder.Configuration["AllowedCORS"]!);
         }));
+
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -139,6 +142,15 @@ app.MapGraphQL("/api/graphql");
 // Minimal API (it is necessary for FE to verify that BE is online)
 app.MapMethods("/api/heartbeat", new[] { "HEAD" },
     () => Results.Ok());
+
+app.MapHub<HealthCheckHub>("/api/health-hub");
+
+// Minimal API
+app.MapGet("/api/broadcast/update2", async (IHubContext<HealthCheckHub> hub) =>
+{
+    await hub.Clients.All.SendAsync("Update", "test-message from minimal API");
+    return Results.Text("Update message sent from minimal API.");
+});
 
 app.MapFallbackToFile("/index.html");
 
