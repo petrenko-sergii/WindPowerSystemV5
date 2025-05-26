@@ -65,9 +65,30 @@ export class TurbineTypeService {
       .pipe(map((result: any) => result.data.turbineType));
   }
 
-  put(item: TurbineType): Observable<TurbineType> {
+  // REST Approach
+  putWithRestApproach(item: TurbineType): Observable<TurbineType> {
     const url = this.getUrl('api/turbine-types/' + item.id);
     return this.http.put<TurbineType>(url, item);
+  }
+
+  put(input: TurbineType): Observable<TurbineType> {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation UpdateTurbineType($turbineType: TurbineTypeInput!) {
+            updateTurbineType(turbineType: $turbineType) {
+              id
+              manufacturer
+              model
+              capacity
+            }
+          }
+        `,
+        variables: {
+          turbineType: input
+        }
+      })
+      .pipe(map((result: any) => result.data.updateTurbineType));
   }
 
   post(item: TurbineType): Observable<TurbineType> {

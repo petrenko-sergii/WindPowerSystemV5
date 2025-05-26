@@ -137,4 +137,31 @@ public class Mutation
             await context.SaveChangesAsync();
         }
     }
+
+    /// <summary>
+    /// Update an existing TurbineType
+    /// </summary>
+    [Serial]
+    [Authorize(Roles = ["RegisteredUser"])]
+    public async Task<TurbineType> UpdateTurbineType(
+        [Service] ApplicationDbContext context, TurbineType turbineType)
+    {
+        var turbineTypeToUpdate = await context.TurbineTypes
+            .Where(t => t.Id == turbineType.Id)
+            .FirstOrDefaultAsync();
+
+        if (turbineTypeToUpdate == null)
+        {
+            // todo: handle errors
+            throw new NotSupportedException();
+        }
+
+        turbineTypeToUpdate.Manufacturer = turbineType.Manufacturer;
+        turbineTypeToUpdate.Model = turbineType.Model;
+        turbineTypeToUpdate.Capacity = turbineType.Capacity;
+
+        context.TurbineTypes.Update(turbineTypeToUpdate);
+        await context.SaveChangesAsync();
+        return turbineTypeToUpdate;
+    }
 }
