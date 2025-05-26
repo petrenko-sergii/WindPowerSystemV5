@@ -59,4 +59,30 @@ public class Query
                 filterColumn,
                 filterQuery);
     }
+
+    /// <summary>
+    /// Gets all Turbine Types
+    /// </summary>
+    [Serial]
+    public IQueryable<TurbineTypeDTO> GetTurbineTypes(
+        [Service] ApplicationDbContext context)
+        => context.TurbineTypes.Select(t => new TurbineTypeDTO
+        {
+            Id = t.Id,
+            Manufacturer = t.Manufacturer,
+            Model = t.Model,
+            Capacity = t.Capacity,
+            TurbineQty = t.Turbines != null ? t.Turbines.Count : 0
+        });
+
+    /// <summary>
+    /// Gets a TurbineType by id.
+    /// </summary>
+    [Serial]
+    public async Task<TurbineType?> GetTurbineType(
+        [Service] ApplicationDbContext context,
+        int id)
+    {
+        return await context.TurbineTypes.FindAsync(id);
+    }
 }
