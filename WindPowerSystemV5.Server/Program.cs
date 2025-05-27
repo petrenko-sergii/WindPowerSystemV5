@@ -122,6 +122,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    // Minimal API
+    app.MapGet("/Error", () => Results.Problem());
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
 
