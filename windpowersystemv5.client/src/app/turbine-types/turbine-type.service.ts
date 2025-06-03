@@ -16,12 +16,13 @@ export class TurbineTypeService {
   ) { }
 
   // REST Approach
-  getDataWithRestApproach(): Observable<TurbineType[]> {
+  getData(): Observable<TurbineType[]> {
     const url = this.getUrl('api/turbine-types');
     return this.http.get<TurbineType[]>(url);
   }
 
-  getData(): Observable<TurbineType[]> {
+  // GraphQL Approach
+  getDataWithGraphQLApproach(): Observable<TurbineType[]> {
     return this.apollo
       .query({
         query: gql`

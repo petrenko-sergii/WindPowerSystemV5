@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WindPowerSystemV5.Server.Data.GraphQL;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,6 +132,13 @@ else
 }
 
 app.UseHttpsRedirection();
+
+// Invoke the UseForwardedHeaders middleware and configure it 
+// to forward the X-Forwarded-For and X-Forwarded-Proto headers.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
