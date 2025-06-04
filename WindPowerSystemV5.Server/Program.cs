@@ -12,6 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 using WindPowerSystemV5.Server.Data.GraphQL;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.HttpOverrides;
+using WindPowerSystemV5.Server.Config;
+using WindPowerSystemV5.Server.Mappings;
+using Microsoft.AspNetCore.Diagnostics;
+using WindPowerSystemV5.Server.Utils.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +84,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<JwtHandler>();
+builder.Services.RegisterRepositories();
+builder.Services.RegisterServices();
+builder.Services.AddSingleton(AutomapperConfig.CreateMapper());
 
 builder.Services.AddGraphQLServer()
     .AddAuthorization()
@@ -122,6 +129,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
@@ -130,6 +138,20 @@ else
     app.MapGet("/Error", () => Results.Problem());
     app.UseHsts();
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        if (exception is NotFoundException)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync(new { error = exception.Message });
+        }
+    });
+});
 
 app.UseHttpsRedirection();
 

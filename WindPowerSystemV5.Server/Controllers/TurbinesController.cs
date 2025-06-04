@@ -4,6 +4,7 @@ using WindPowerSystemV5.Server.Data;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using WindPowerSystemV5.Server.Services.Interfaces;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -12,43 +13,33 @@ namespace WindPowerSystemV5.Server.Controllers;
 public class TurbinesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    
+    private readonly ITurbineService _turbineService;
+
     public ILogger<TurbinesController> Logger { get; set; }
 
-    public TurbinesController(ApplicationDbContext context, ILogger<TurbinesController> logger)
+    public TurbinesController(
+        ApplicationDbContext context,
+        ITurbineService turbineService,
+        ILogger<TurbinesController> logger)
     {
         _context = context;
+        _turbineService = turbineService;
         Logger = logger;
         Logger.LogInformation("TurbinesController initialized.");
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TurbineDTO>>> Get()
+    public async Task<List<TurbineDTO>> Get()
     {
-        return await _context.Turbines
-            .Select(t => new TurbineDTO
-            {
-                Id = t.Id,
-                SerialNumber = t.SerialNumber,
-                Status = t.Status.ToString(),
-                TurbineTypeId = t.TurbineTypeId,
-                Manufacturer = t.TurbineType!.Manufacturer,
-                Model = t.TurbineType!.Model
-            })
-            .ToListAsync();
+        return await _turbineService.Get();
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Turbine>> Get(int id)
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TurbineDTO))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<TurbineDTO> Get(int id)
     {
-        var turbine = await _context.Turbines.FindAsync(id);
-
-        if (turbine == null)
-        {
-            return NotFound();
-        }
-
-        return turbine;
+        return await _turbineService.Get(id);
     }
 
     [HttpPost]
