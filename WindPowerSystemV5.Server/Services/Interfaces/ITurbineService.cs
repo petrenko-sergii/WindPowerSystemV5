@@ -7,4 +7,8 @@ public interface ITurbineService
     Task<List<TurbineDTO>> Get();
 
     Task<TurbineDTO> Get(int id);
+
+    Task<int> Create(TurbineDTO turbineDto);
+
+    Task Update(TurbineDTO turbineDto);
 }

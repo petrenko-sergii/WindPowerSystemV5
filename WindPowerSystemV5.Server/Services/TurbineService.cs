@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using WindPowerSystemV5.Server.Data.DTOs;
+using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.Repositories.Interfaces;
 using WindPowerSystemV5.Server.Services.Interfaces;
 using WindPowerSystemV5.Server.Utils.Exceptions;
@@ -44,5 +45,26 @@ public class TurbineService : ITurbineService
         }
 
         return _mapper.Map<TurbineDTO>(turbine);
+    }
+
+    public async Task<int> Create(TurbineDTO turbineDto)
+    {
+        var turbine = _mapper.Map<Turbine>(turbineDto);
+
+        return await _turbineRepository.Create(turbine);
+    }
+
+    public async Task Update(TurbineDTO turbineDto)
+    {
+        var turbineDB = await _turbineRepository.Get(turbineDto.Id);
+
+        if (turbineDB == null)
+        {
+            throw new NotFoundException($"Turbine with ID {turbineDto.Id} is not found.");
+        }
+
+        turbineDB = _mapper.Map<Turbine>(turbineDto);
+
+        await _turbineRepository.Update(turbineDB);
     }
 }

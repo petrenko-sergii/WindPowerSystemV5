@@ -9,5 +9,6 @@ public class TurbineProfile : Profile
     public TurbineProfile()
     {
         CreateMap<Turbine, TurbineDTO>();
+        CreateMap<TurbineDTO, Turbine>();
     }
 }

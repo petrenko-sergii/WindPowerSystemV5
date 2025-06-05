@@ -7,4 +7,8 @@ public interface ITurbineRepository
     Task<List<Turbine>> Get();
 
     Task<Turbine?> Get(int id);
+
+    Task<int> Create(Turbine turbine);
+
+    Task Update(Turbine turbine);
 }
