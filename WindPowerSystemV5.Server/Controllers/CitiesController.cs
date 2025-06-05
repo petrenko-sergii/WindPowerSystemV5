@@ -4,6 +4,7 @@ using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data;
 using WindPowerSystemV5.Server.Data.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using WindPowerSystemV5.Server.Data.Repositories.Interfaces;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -12,10 +13,12 @@ namespace WindPowerSystemV5.Server.Controllers;
 public class CitiesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly ICityRepository _cityRepository;
 
-    public CitiesController(ApplicationDbContext context)
+    public CitiesController(ApplicationDbContext context, ICityRepository cityRepository)
     {
         _context = context;
+        _cityRepository = cityRepository;
     }
 
     [HttpGet]
@@ -93,9 +96,8 @@ public class CitiesController : ControllerBase
     [Authorize(Roles = "RegisteredUser")]
     public async Task<ActionResult<City>> PostCity(City city)
     {
-        _context.Cities.Add(city);
-        await _context.SaveChangesAsync();
-
+        await _cityRepository.Create(city);
+   
         return CreatedAtAction("GetCity", new { id = city.Id }, city);
     }
 

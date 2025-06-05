@@ -9,11 +9,13 @@ public static class ServiceModule
 {
     public static void RegisterRepositories(this IServiceCollection services)
     {
+        services.AddScoped<ICityRepository, CityRepository>();
         services.AddScoped<ITurbineRepository, TurbineRepository>();
     }
 
     public static void RegisterServices(this IServiceCollection services)
     {
+        services.AddScoped<ICityService, CityService>();
         services.AddScoped<ITurbineService, TurbineService>();
     }
 }

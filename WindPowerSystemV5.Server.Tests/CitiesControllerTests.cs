@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WindPowerSystemV5.Server.Controllers;
 using WindPowerSystemV5.Server.Data.Models;
+using WindPowerSystemV5.Server.Data.Repositories.Interfaces;
+using NSubstitute;
 using WindPowerSystemV5.Server.Data;
 
 namespace WindPowerSystemV5.Server.Tests;
@@ -12,9 +14,10 @@ public class CitiesControllerTests
     {
         // Arrange
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "WIND-POWER-SYSTEM")
-            .Options;
+       .UseInMemoryDatabase(databaseName: "WIND-POWER-SYSTEM")
+       .Options;
         using var context = new ApplicationDbContext(options);
+        var cityRepository = Substitute.For<ICityRepository>();
 
         context.Add(new City()
         {
@@ -26,7 +29,7 @@ public class CitiesControllerTests
         });
         context.SaveChanges();
 
-        var controller = new CitiesController(context);
+        var controller = new CitiesController(context, cityRepository);
         City? city_existing = null;
         City? city_notExisting = null;
 

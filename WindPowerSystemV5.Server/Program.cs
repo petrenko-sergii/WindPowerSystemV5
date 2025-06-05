@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using WindPowerSystemV5.Server.Config;
 using WindPowerSystemV5.Server.Mappings;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Caching.Memory;
 using WindPowerSystemV5.Server.Utils.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,9 @@ builder.Services.AddHealthChecks()
     .AddCheck("ICMP_01", new ICMPHealthCheck("www.ryadel.com", 100))
     .AddCheck("ICMP_02", new ICMPHealthCheck("www.google.com", 100))
     .AddCheck("ICMP_03", new ICMPHealthCheck($"www.{Guid.NewGuid():N}.com", 100));
+
+builder.Services.AddSingleton<IMemoryCache>(
+    new MemoryCache(new MemoryCacheOptions()));
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
