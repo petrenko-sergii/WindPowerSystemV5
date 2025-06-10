@@ -1,6 +1,8 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using System.Net;
 using WindPowerSystemV5.Server.Data.NoSqlModels;
+using WindPowerSystemV5.Server.Utils.Exceptions;
 
 namespace WindPowerSystemV5.Server.Services;
 
@@ -13,7 +15,7 @@ public class CosmosDbService
         _container = client.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<MaintenanceRecord>> GetRecordsByTurbineAsync(int turbineId)
+    public async Task<IEnumerable<MaintenanceRecord>> GetMaintenanceRecordsByTurbineIdAsync(int turbineId)
     {
         var query = _container.GetItemLinqQueryable<MaintenanceRecord>(allowSynchronousQueryExecution: false)
             .Where(r => r.TurbineId == turbineId)
@@ -27,5 +29,19 @@ public class CosmosDbService
         }
 
         return results;
+    }
+
+    public async Task<MaintenanceRecord?> GetMaintenanceRecordAsync(string id)
+    {
+        try
+        {
+            var record = await _container.ReadItemAsync<MaintenanceRecord>(id, new PartitionKey(id));
+
+            return record.Resource;
+        }
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new NotFoundException($"MaintenanceRecord with ID {id} is not found.");
+        }
     }
 }
