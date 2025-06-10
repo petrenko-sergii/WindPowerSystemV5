@@ -208,18 +208,6 @@ app.MapGet("/api/broadcast/update2", async (IHubContext<HealthCheckHub> hub) =>
     return Results.Text("Update message sent from minimal API.");
 });
 
-app.MapGet("/api/maintenance/{Id}", async (string id, CosmosDbService service) =>
-{
-    var record = await service.GetMaintenanceRecordAsync(id);
-    return Results.Ok(record);
-});
-
-app.MapGet("/api/maintenance/turbine/{turbineId}", async (int turbineId, CosmosDbService service) =>
-{
-    var records = await service.GetMaintenanceRecordsByTurbineIdAsync(turbineId);
-    return Results.Ok(records);
-});
-
 app.MapFallbackToFile("/index.html");
 
 app.Run();

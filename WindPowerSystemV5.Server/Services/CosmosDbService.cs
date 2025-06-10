@@ -15,20 +15,20 @@ public class CosmosDbService
         _container = client.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<MaintenanceRecord>> GetMaintenanceRecordsByTurbineIdAsync(int turbineId)
+    public async Task<List<MaintenanceRecord>> GetMaintenanceRecordsByTurbineIdAsync(int turbineId)
     {
         var query = _container.GetItemLinqQueryable<MaintenanceRecord>(allowSynchronousQueryExecution: false)
             .Where(r => r.TurbineId == turbineId)
             .ToFeedIterator();
 
-        List<MaintenanceRecord> results = new();
+        List<MaintenanceRecord> results = [];
         while (query.HasMoreResults)
         {
             var response = await query.ReadNextAsync();
             results.AddRange(response);
         }
 
-        return results;
+        return results.ToList();
     }
 
     public async Task<MaintenanceRecord?> GetMaintenanceRecordAsync(string id)
