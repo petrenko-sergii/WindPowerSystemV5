@@ -17,6 +17,8 @@ using WindPowerSystemV5.Server.Mappings;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using WindPowerSystemV5.Server.Utils.Exceptions;
+using Microsoft.Azure.Cosmos;
+using WindPowerSystemV5.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +72,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         //    .EnableDetailedErrors()
         //#endif
 );
+
+builder.Services.AddSingleton(s =>
+{
+    var connectionString = builder.Configuration["ConnectionStrings:CosmosDbConnection"];
+    var cosmosDbEndpoint = builder.Configuration["CosmosDb:Endpoint"];
+    var cosmosDbKey = builder.Configuration["CosmosDb:PrimaryKey"];
+    var databaseName = builder.Configuration["CosmosDb:Database"];
+    var containerName = "MaintenanceRecords";
+
+    var client = new CosmosClient(cosmosDbEndpoint, cosmosDbKey);
+
+    return new CosmosDbService(client, databaseName, containerName);
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -191,6 +206,12 @@ app.MapGet("/api/broadcast/update2", async (IHubContext<HealthCheckHub> hub) =>
 {
     await hub.Clients.All.SendAsync("Update", "test-message from minimal API");
     return Results.Text("Update message sent from minimal API.");
+});
+
+app.MapGet("/api/maintenance/turbine/{turbineId}", async (int turbineId, CosmosDbService service) =>
+{
+    var records = await service.GetRecordsByTurbineAsync(turbineId);
+    return Results.Ok(records);
 });
 
 app.MapFallbackToFile("/index.html");
