@@ -19,6 +19,7 @@ using Microsoft.Extensions.Caching.Memory;
 using WindPowerSystemV5.Server.Utils.Exceptions;
 using Microsoft.Azure.Cosmos;
 using WindPowerSystemV5.Server.Services;
+using WindPowerSystemV5.Server.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,19 +74,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         //#endif
 );
 
-builder.Services.AddSingleton(s =>
-{
-    var connectionString = builder.Configuration["ConnectionStrings:CosmosDbConnection"];
-    var cosmosDbEndpoint = builder.Configuration["CosmosDb:Endpoint"];
-    var cosmosDbKey = builder.Configuration["CosmosDb:PrimaryKey"];
-    var databaseName = builder.Configuration["CosmosDb:Database"];
-    var containerName = "MaintenanceRecords";
-
-    var client = new CosmosClient(cosmosDbEndpoint, cosmosDbKey);
-
-    return new CosmosDbService(client, databaseName, containerName);
-});
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -102,6 +90,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     //.AddApiEndpoints()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.AddScoped<ICosmosDbContext, CosmosDbContext>();
 builder.Services.AddScoped<JwtHandler>();
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();

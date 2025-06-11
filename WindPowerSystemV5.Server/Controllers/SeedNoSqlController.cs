@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
 using WindPowerSystemV5.Server.Data.NoSqlModels;
+using WindPowerSystemV5.Server.Services.Interfaces;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -10,23 +10,17 @@ namespace WindPowerSystemV5.Server.Controllers;
 [Authorize(Roles = "Administrator")]
 public class SeedNoSqlController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
+    private readonly ICosmosDbContext _cosmosDbContext;
 
-    public SeedNoSqlController(IConfiguration configuration)
+    public SeedNoSqlController(ICosmosDbContext cosmosDbContext)
     {
-        _configuration = configuration;
+        _cosmosDbContext = cosmosDbContext;
     }
 
     [HttpPost("maintenance-records")]
     public async Task<IActionResult> SeedMaintenanceRecords()
     {
-        var cosmosDbEndpoint = _configuration["CosmosDb:Endpoint"];
-        var cosmosDbKey = _configuration["CosmosDb:PrimaryKey"];
-        var databaseName = _configuration["CosmosDb:Database"];
-        var containerName = "MaintenanceRecords";
-
-        var client = new CosmosClient(cosmosDbEndpoint, cosmosDbKey);
-        var container = client.GetContainer(databaseName, containerName);
+        var container = _cosmosDbContext.MaintenanceRecordsContainer;
 
         var records = new List<MaintenanceRecord>
         {
