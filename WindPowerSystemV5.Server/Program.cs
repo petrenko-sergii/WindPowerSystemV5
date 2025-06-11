@@ -153,10 +153,16 @@ app.UseExceptionHandler(errorApp =>
     {
         var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-        if (exception is NotFoundException)
+        switch (exception)
         {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-            await context.Response.WriteAsJsonAsync(new { error = exception.Message });
+            case NotFoundException notFoundException:
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsJsonAsync(new { error = notFoundException.Message });
+                break;
+            case BadRequestException badRequestException:
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(new { error = badRequestException.Message });
+                break;
         }
     });
 });

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.Data.NoSqlModels;
 using WindPowerSystemV5.Server.Services.Interfaces;
+using WindPowerSystemV5.Server.Utils.Exceptions;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -25,5 +27,16 @@ public class MaintenanceRecordController : ControllerBase
     public async Task<List<MaintenanceRecord>> GetByTurbineId(int turbineId)
     {
         return await _maintenanceRecordService.GetByTurbineId(turbineId);
+    }
+
+    [HttpPut("{id}")]
+    public async Task Update(string id, MaintenanceRecordDTO recordToUpdate)
+    {
+        if (recordToUpdate == null || id != recordToUpdate.Id)
+        {
+            throw new BadRequestException("Invalid maintenance-record data or mismatched id.");
+        }
+
+        await _maintenanceRecordService.Update(id, recordToUpdate);
     }
 }
