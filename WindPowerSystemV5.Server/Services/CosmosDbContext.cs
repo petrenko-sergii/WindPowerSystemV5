@@ -19,8 +19,8 @@ public class CosmosDbContext : ICosmosDbContext
     }
 
     public Container MaintenanceRecordsContainer =>
-        _client.GetContainer(_databaseName, "MaintenanceRecords");
+        _client.GetContainer(_databaseName, ContainerNames.MaintenanceRecords);
 
     public Container TurbineConfigSnapshotsContainer => 
-        _client.GetContainer(_databaseName, "TurbineConfigSnapshots");
+        _client.GetContainer(_databaseName, ContainerNames.TurbineConfigSnapshots);
 }

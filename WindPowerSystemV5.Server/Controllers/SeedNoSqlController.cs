@@ -70,7 +70,7 @@ public class SeedNoSqlController : ControllerBase
     public async Task<IActionResult> SeedTurbineConfigSnapshots()
     {
         var database = _cosmosDbContext.TurbineConfigSnapshotsContainer.Database;
-        var containerId = "TurbineConfigSnapshots";
+        var containerId = ContainerNames.TurbineConfigSnapshots;
         var partitionKeyPath = "/turbineId";
 
         var containerResponse = await database.CreateContainerIfNotExistsAsync(
