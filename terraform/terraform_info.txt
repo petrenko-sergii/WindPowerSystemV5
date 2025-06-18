@@ -1,0 +1,4 @@
+The "main.tf" was executed with
+Terraform v1.9.8
+on windows_amd64
++ provider registry.terraform.io/hashicorp/azurerm v4.33.0

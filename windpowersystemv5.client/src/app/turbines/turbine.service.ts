@@ -6,6 +6,8 @@ import { Turbine } from './turbine';
 import { TurbineType } from '../turbine-types/turbine-type';
 import { environment } from '../../environments/environment';
 
+// This will tell Angular to provide this injectable in the application root,
+// thus making it a singleton service.
 @Injectable({
   providedIn: 'root',
 })

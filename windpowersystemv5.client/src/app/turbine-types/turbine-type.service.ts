@@ -6,6 +6,8 @@ import { Apollo, gql } from 'apollo-angular';
 import { TurbineType } from './turbine-type';
 import { environment } from '../../environments/environment';
 
+// This will tell Angular to provide this injectable in the application root,
+// thus making it a singleton service.
 @Injectable({
   providedIn: 'root',
 })
