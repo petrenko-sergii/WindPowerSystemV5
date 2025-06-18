@@ -145,4 +145,51 @@ public class SeedNoSqlController : ControllerBase
 
         return Ok(new { message });
     }
+
+    [HttpPost("turbine-characteristics")]
+    public async Task<IActionResult> SeedTurbineCharacteristics()
+    {
+        var container = _cosmosDbContext.TurbineCharacteristicsContainer;
+
+        var characteristics = new List<TurbineCharacteristic>
+        {
+            new TurbineCharacteristic
+            {
+                TurbineId = 1,
+                RotorDiameter = 120.5f,
+                HubHeight = 90f,
+                RotorSpeedRpm = 15.2,
+                WindSpeedMps = 7.8,
+                PowerOutputKw = 2450,
+                Timestamp = DateTime.Parse("2022-03-15T10:00:00Z")
+            },
+            new TurbineCharacteristic
+            {
+                TurbineId = 2,
+                RotorDiameter = 110f,
+                HubHeight = 80f,
+                RotorSpeedRpm = 14.5,
+                WindSpeedMps = 6.9,
+                PowerOutputKw = 1980,
+                Timestamp = DateTime.Parse("2023-07-10T11:30:00Z")
+            },
+            new TurbineCharacteristic
+            {
+                TurbineId = 3,
+                RotorDiameter = 130f,
+                HubHeight = 100f,
+                RotorSpeedRpm = 16.1,
+                WindSpeedMps = 8.2,
+                PowerOutputKw = 2990,
+                Timestamp = DateTime.Parse("2024-01-20T09:15:00Z")
+            }
+        };
+
+        foreach (var characteristic in characteristics)
+        {
+            await container.CreateItemAsync(characteristic, new PartitionKey(characteristic.TurbineId));
+        }
+
+        return Ok(new { message = "Seeded TurbineCharacteristics to Cosmos DB." });
+    }
 }

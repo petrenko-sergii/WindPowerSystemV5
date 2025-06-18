@@ -21,6 +21,9 @@ public class CosmosDbContext : ICosmosDbContext
     public Container MaintenanceRecordsContainer =>
         _client.GetContainer(_databaseName, ContainerNames.MaintenanceRecords);
 
+    public Container TurbineCharacteristicsContainer =>
+      _client.GetContainer(_databaseName, ContainerNames.TurbineCharacteristics);
+
     public Container TurbineConfigSnapshotsContainer => 
         _client.GetContainer(_databaseName, ContainerNames.TurbineConfigSnapshots);
 }
