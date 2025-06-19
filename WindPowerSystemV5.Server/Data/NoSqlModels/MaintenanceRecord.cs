@@ -11,9 +11,9 @@ public class MaintenanceRecord
 
     public DateTime ServiceDate { get; set; }
 
-    public string Type { get; set; }
+    public string Type { get; set; } = null!;
 
-    public string Technician { get; set; }
+    public string Technician { get; set; } = null!;
 
     public List<string>? ActionsTaken { get; set; }
 
@@ -27,9 +27,9 @@ public class MaintenanceRecord
 
     public int DowntimeMinutes { get; set; }
 
-    public List<string> PartsReplaced { get; set; }
+    public List<string> PartsReplaced { get; set; } = null!;
 
-    public string EventTrigger { get; set; }
+    public string EventTrigger { get; set; } = null!;
 
-    public string Comments { get; set; }
+    public string Comments { get; set; } = null!;
 }
