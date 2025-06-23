@@ -30,7 +30,7 @@ export class TurbineService {
       .query({
         query: gql`
         query GetTurbines {
-          turbine {
+          turbineQueries {
             turbines {
               id
               serialNumber
@@ -43,7 +43,7 @@ export class TurbineService {
         }
       `
       })
-      .pipe(map((result: any) => result.data.turbine.turbines));
+      .pipe(map((result: any) => result.data.turbineQueries.turbines));
   }
 
   // GraphQL Approach, without Apollo
@@ -51,7 +51,7 @@ export class TurbineService {
     const url = this.getUrl('api/graphql');
     const query = `
     query {
-      turbine {
+      turbineQueries {
         turbines {
           id
           serialNumber
@@ -64,9 +64,9 @@ export class TurbineService {
     }
   `;
     return this.http.post<any>(url, { query }).pipe(
-      // The GraphQL response will be { data: { turbines: Turbine[] } }
+      // The GraphQL response will be { data: { turbineQueries : { turbines: Turbine[] } } }
       // so we map to just the array of turbines
-      map(response => response.data.turbine.turbines as Turbine[])
+      map(response => response.data.turbineQueries.turbines as Turbine[])
     );
   }
 

@@ -6,7 +6,7 @@ namespace WindPowerSystemV5.Server.Data.GraphQL;
 
 public class Query
 {
-    public TurbineQuery Turbine => new();
+    public TurbineQuery TurbineQueries => new();
 
     /// <summary>
     /// Gets all Cities.
