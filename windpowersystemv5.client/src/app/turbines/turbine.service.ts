@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Turbine } from './turbine';
 import { TurbineType } from '../turbine-types/turbine-type';
@@ -15,10 +16,33 @@ export class TurbineService {
   constructor(protected http: HttpClient) {
   }
 
-  getData(): Observable<Turbine[]> {
+  // REST Approach
+  getDataRestApproach(): Observable<Turbine[]> {
     const url = this.getUrl('api/turbines');
     return this.http.get<Turbine[]>(url);
   }
+
+  getData(): Observable<Turbine[]> {
+    const url = this.getUrl('api/graphql');
+    const query = `
+    query {
+      turbines {
+        id
+        serialNumber
+        status
+        turbineTypeId
+        manufacturer
+        model
+      }
+    }
+  `;
+    return this.http.post<any>(url, { query }).pipe(
+      // The GraphQL response will be { data: { turbines: Turbine[] } }
+      // so we map to just the array of turbines
+      map(response => response.data.turbines as Turbine[])
+    );
+  }
+
 
   get(id: number): Observable<Turbine> {
     const url = this.getUrl('api/turbines/' + id);
