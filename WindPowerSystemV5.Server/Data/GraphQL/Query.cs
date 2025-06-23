@@ -94,7 +94,8 @@ public class Query
         [Service] ApplicationDbContext context)
         => context.Turbines
             .Include(t => t.TurbineType)
-            .Select(t => new TurbineDTO {
+            .Select(t => new TurbineDTO
+            {
                 Id = t.Id,
                 SerialNumber = t.SerialNumber,
                 Status = t.Status.ToString(),

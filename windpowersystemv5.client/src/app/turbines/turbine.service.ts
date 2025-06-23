@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, map } from 'rxjs';
+import { Apollo, gql } from 'apollo-angular'; 
 
 import { Turbine } from './turbine';
 import { TurbineType } from '../turbine-types/turbine-type';
@@ -13,8 +13,10 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class TurbineService {
-  constructor(protected http: HttpClient) {
-  }
+  constructor(
+    protected http: HttpClient,
+    private apollo: Apollo
+  ) { }
 
   // REST Approach
   getDataRestApproach(): Observable<Turbine[]> {
@@ -22,7 +24,28 @@ export class TurbineService {
     return this.http.get<Turbine[]>(url);
   }
 
+  // GraphQL Approach, with Apollo
   getData(): Observable<Turbine[]> {
+    return this.apollo
+      .query({
+        query: gql`
+        query GetTurbines {
+          turbines {
+            id
+            serialNumber
+            status
+            turbineTypeId
+            manufacturer
+            model
+          }
+        }
+      `
+      })
+      .pipe(map((result: any) => result.data.turbines));
+  }
+
+  // GraphQL Approach, without Apollo
+  getData2(): Observable<Turbine[]> {
     const url = this.getUrl('api/graphql');
     const query = `
     query {
@@ -42,7 +65,6 @@ export class TurbineService {
       map(response => response.data.turbines as Turbine[])
     );
   }
-
 
   get(id: number): Observable<Turbine> {
     const url = this.getUrl('api/turbines/' + id);
