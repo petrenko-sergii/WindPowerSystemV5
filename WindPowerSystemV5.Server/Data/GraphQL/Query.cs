@@ -6,6 +6,8 @@ namespace WindPowerSystemV5.Server.Data.GraphQL;
 
 public class Query
 {
+    public TurbineQuery Turbine => new();
+
     /// <summary>
     /// Gets all Cities.
     /// </summary>
@@ -85,22 +87,4 @@ public class Query
     {
         return await context.TurbineTypes.FindAsync(id);
     }
-
-    /// <summary>
-    /// Gets all Turbines
-    /// </summary>
-    [Serial]
-    public IQueryable<TurbineDTO> GetTurbines(
-        [Service] ApplicationDbContext context)
-        => context.Turbines
-            .Include(t => t.TurbineType)
-            .Select(t => new TurbineDTO
-            {
-                Id = t.Id,
-                SerialNumber = t.SerialNumber,
-                Status = t.Status.ToString(),
-                TurbineTypeId = t.TurbineTypeId,
-                Manufacturer = t.TurbineType!.Manufacturer,
-                Model = t.TurbineType!.Model
-            });
 }
