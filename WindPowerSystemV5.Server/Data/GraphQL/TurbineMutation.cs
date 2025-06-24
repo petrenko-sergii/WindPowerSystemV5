@@ -15,8 +15,8 @@ public class TurbineMutation
     /// </summary>
     [Serial]
     [Authorize(Roles = ["RegisteredUser"])]
-    public async Task<Turbine> UpdateTurbine(
-        [Service] ApplicationDbContext context, Turbine turbine)
+    public async Task<TurbineDTO> UpdateTurbine(
+        [Service] ApplicationDbContext context, TurbineUpdateRequest turbine)
     {
         var turbineToUpdate = await context.Turbines
             .Where(t => t.Id == turbine.Id)
@@ -27,13 +27,25 @@ public class TurbineMutation
             throw new NotFoundException($"Turbine with ID {turbine.Id} is not found.");
         }
 
+        if (!Enum.TryParse<TurbineStatus>(turbine.Status, true, out var status))
+        {
+            throw new BadRequestException($"Invalid TurbineStatus value: {turbine.Status}");
+        }
+
         turbineToUpdate.SerialNumber = turbine.SerialNumber;
-        turbineToUpdate.Status = turbine.Status;
+        turbineToUpdate.Status = status;
         turbineToUpdate.TurbineTypeId = turbine.TurbineTypeId;
 
         context.Turbines.Update(turbineToUpdate);
         await context.SaveChangesAsync();
-        return turbineToUpdate;
+
+        return new TurbineDTO
+        {
+            Id = turbineToUpdate.Id,
+            SerialNumber = turbineToUpdate.SerialNumber,
+            Status = turbineToUpdate.Status.ToString(),
+            TurbineTypeId = turbineToUpdate.TurbineTypeId,
+        };
     }
 
     /// <summary>
@@ -44,7 +56,6 @@ public class TurbineMutation
     public async Task<TurbineDTO> AddTurbine(
         [Service] ApplicationDbContext context, TurbineCreationRequest turbine)
     {
-
         if (!Enum.TryParse<TurbineStatus>(turbine.Status, true, out var status))
         {
             throw new BadRequestException($"Invalid TurbineStatus value: {turbine.Status}");

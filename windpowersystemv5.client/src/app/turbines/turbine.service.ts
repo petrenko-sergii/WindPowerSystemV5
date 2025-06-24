@@ -98,9 +98,32 @@ export class TurbineService {
       .pipe(map((result: any) => result.data.turbineQueries.turbine));
   }
 
-  put(item: Turbine): Observable<Turbine> {
+  // REST Approach
+  putRestApproach(item: Turbine): Observable<Turbine> {
     const url = this.getUrl('api/turbines/' + item.id);
     return this.http.put<Turbine>(url, item);
+  }
+
+  put(item: Turbine): Observable<Turbine> {
+    return this.apollo
+      .mutate({
+        mutation: gql`
+          mutation UpdateTurbine($turbine: TurbineUpdateRequestInput!) {
+           turbineMutations {
+             updateTurbine(turbine: $turbine) {
+               id
+               serialNumber
+               status
+               turbineTypeId
+             }
+           }
+          }
+        `,
+        variables: {
+          turbine: item
+        }
+      })
+      .pipe(map((result: any) => result.data.turbineMutations.updateTurbine));
   }
 
   // REST Approach
