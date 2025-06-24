@@ -2,11 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.Data.Models;
+using WindPowerSystemV5.Server.Utils.Exceptions;
 
 namespace WindPowerSystemV5.Server.Data.GraphQL;
 
 public class Mutation
 {
+    public TurbineMutation TurbineMutations => new();
+
     /// <summary>
     /// Add a new City
     /// </summary>
@@ -152,8 +155,7 @@ public class Mutation
 
         if (turbineTypeToUpdate == null)
         {
-            // todo: handle errors
-            throw new NotSupportedException();
+            throw new NotFoundException($"TurbineType with ID {turbineType.Id} is not found.");
         }
 
         turbineTypeToUpdate.Manufacturer = turbineType.Manufacturer;

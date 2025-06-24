@@ -275,34 +275,6 @@
 			"response": []
 		},
 		{
-			"name": "GraphQL GetTurbine by Id",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "graphql",
-					"graphql": {
-						"query": " query GetTurbine($id: Int!) {\r\n    turbineQueries {\r\n        turbine(id: $id) {\r\n            id\r\n            serialNumber\r\n            status\r\n            turbineTypeId            \r\n        }\r\n    }\r\n }",
-						"variables": "{\r\n    \"id\": 4\r\n}"
-					}
-				},
-				"url": {
-					"raw": "https://localhost:40443/api/graphql/",
-					"protocol": "https",
-					"host": [
-						"localhost"
-					],
-					"port": "40443",
-					"path": [
-						"api",
-						"graphql",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "GraphQL GetTurbineTypes",
 			"request": {
 				"method": "POST",
@@ -357,6 +329,155 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GraphQL Update turbine type",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{wps_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": " mutation UpdateTurbineType($turbineType: TurbineTypeInput!) {\r\n   updateTurbineType(turbineType: $turbineType) {\r\n     id\r\n     manufacturer\r\n     model\r\n     capacity\r\n   }\r\n }",
+						"variables": "{\r\n    \"turbineType\": {\r\n        \"id\": 2,\r\n        \"manufacturer\": \"Siemens Gamesa\",\r\n        \"model\": \"SG 2.1-114\",\r\n        \"capacity\": 1140\r\n    }\r\n}"
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetTurbine by Id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": " query GetTurbine($id: Int!) {\r\n    turbineQueries {\r\n        turbine(id: $id) {\r\n            id\r\n            serialNumber\r\n            status\r\n            turbineTypeId            \r\n        }\r\n    }\r\n }",
+						"variables": "{\r\n    \"id\": 4\r\n}"
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Update turbine",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{wps_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": " mutation UpdateTurbine($turbine: TurbineInput!) {\r\n    turbineMutations {\r\n        updateTurbine(turbine: $turbine) {\r\n            id\r\n            serialNumber\r\n            status\r\n            turbineTypeId\r\n        }\r\n    }\r\n }",
+						"variables": "{\r\n    \"turbine\": {\r\n        \"id\": 1,\r\n        \"serialNumber\": \"V52/850/2014-dk/kol-863-555\",\r\n        \"status\": \"CUT_OUT\",\r\n        \"turbineTypeId\": 1\r\n    }\r\n}"
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL Add turbine",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{wps_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": " mutation AddTurbine($turbine: TurbineCreationRequestInput!) {\r\n    turbineMutations {\r\n        addTurbine(turbine: $turbine) {\r\n            id\r\n            serialNumber\r\n            status\r\n            turbineTypeId\r\n        }\r\n    }\r\n }",
+						"variables": "{\r\n    \"turbine\": {\r\n        \"serialNumber\": \"V52/850/2017-dk/kol-524\",\r\n        \"status\": \"CutOut\",\r\n        \"turbineTypeId\": 2\r\n    }\r\n}"
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "wps_token",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
