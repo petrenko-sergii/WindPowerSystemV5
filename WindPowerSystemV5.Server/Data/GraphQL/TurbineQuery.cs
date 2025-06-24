@@ -22,4 +22,23 @@ public class TurbineQuery
                 Manufacturer = t.TurbineType!.Manufacturer,
                 Model = t.TurbineType!.Model
             });
+
+    /// <summary>
+    /// Gets a Turbine by id
+    /// </summary>
+    [Serial]
+    public async Task<TurbineDTO?> GetTurbine(
+        [Service] ApplicationDbContext context,
+        int id)
+    {
+        var turbine =  await context.Turbines.FindAsync(id);
+
+        return turbine == null ? null : new TurbineDTO
+        {
+            Id = turbine.Id,
+            SerialNumber = turbine.SerialNumber,
+            Status = turbine.Status.ToString(),
+            TurbineTypeId = turbine.TurbineTypeId,
+        };
+    }
 }

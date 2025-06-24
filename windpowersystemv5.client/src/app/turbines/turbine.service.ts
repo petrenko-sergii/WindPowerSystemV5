@@ -70,9 +70,32 @@ export class TurbineService {
     );
   }
 
-  get(id: number): Observable<Turbine> {
+  // REST Approach
+  getRestApproach(id: number): Observable<Turbine> {
     const url = this.getUrl('api/turbines/' + id);
     return this.http.get<Turbine>(url);
+  }
+
+  get(id: number): Observable<Turbine> {
+    return this.apollo
+      .query({
+        query: gql`
+          query GetTurbine($id: Int!) {
+            turbineQueries {
+              turbine(id: $id) {
+                id
+                serialNumber
+                status
+                turbineTypeId
+              }
+            }
+          }
+        `,
+        variables: {
+          id
+        }
+      })
+      .pipe(map((result: any) => result.data.turbineQueries.turbine));
   }
 
   put(item: Turbine): Observable<Turbine> {

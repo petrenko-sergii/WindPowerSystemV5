@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "001d8687-15d9-4242-ad86-54309e355a1e",
+		"name": "WPS_v5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8069361"
+	},
+	"item": [
+		{
+			"name": "Get turbines",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://windpowersystem-api-bccshsbfhthxbjer.polandcentral-01.azurewebsites.net/api/turbines",
+					"protocol": "https",
+					"host": [
+						"windpowersystem-api-bccshsbfhthxbjer",
+						"polandcentral-01",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"turbines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get turbine types",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://windpowersystem-api-bccshsbfhthxbjer.polandcentral-01.azurewebsites.net/api/turbine-types",
+					"protocol": "https",
+					"host": [
+						"windpowersystem-api-bccshsbfhthxbjer",
+						"polandcentral-01",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"turbine-types"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"email\":\"admin@email.com\",\"password\":\"override-this\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://windpowersystem-api-bccshsbfhthxbjer.polandcentral-01.azurewebsites.net/api/Account/Login",
+					"protocol": "https",
+					"host": [
+						"windpowersystem-api-bccshsbfhthxbjer",
+						"polandcentral-01",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"Account",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local: Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"email\":\"user@email.com\",\"password\":\"override-this\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:4200/api/Account/Login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "4200",
+					"path": [
+						"api",
+						"Account",
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local: Get turbine",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:40443/api/Turbines/100",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"Turbines",
+						"100"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local: Get cities",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:40443/api/Addresses/cities",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"Addresses",
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local: Get cities with country name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:40443/api/Addresses/cities-with-country",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"Addresses",
+						"cities-with-country"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local: Get cached cities with country name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:40443/api/Addresses/cached-cities-with-country",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"Addresses",
+						"cached-cities-with-country"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local: Get cached city",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:40443/api/Addresses/cached-city/41",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"Addresses",
+						"cached-city",
+						"41"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetTurbines",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\r\n   turbineQueries {\r\n    turbines{\r\n        id\r\n        serialNumber\r\n        status\r\n        turbineTypeId\r\n        manufacturer\r\n        model        \r\n    }\r\n   }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetTurbineType by Id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": " query GetTurbineType($id: Int!) {\r\n   turbineType(id: $id) {\r\n     id\r\n     manufacturer\r\n     model\r\n     capacity\r\n   }\r\n }",
+						"variables": "{\r\n    \"id\": 3\r\n}"
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetTurbine by Id",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": " query GetTurbine($id: Int!) {\r\n    turbineQueries {\r\n        turbine(id: $id) {\r\n            id\r\n            serialNumber\r\n            status\r\n            turbineTypeId            \r\n        }\r\n    }\r\n }",
+						"variables": "{\r\n    \"id\": 4\r\n}"
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetTurbineTypes",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\r\n    turbineTypes {\r\n        id\r\n        manufacturer\r\n        model\r\n        capacity\r\n        turbineQty\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GraphQL GetCities",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query {\r\n    cities(order: { id: ASC }, first:3 ) {\r\n        nodes {\r\n            id\r\n            name\r\n            lat\r\n            lon\r\n            countryId            \r\n        }\r\n    }\r\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "https://localhost:40443/api/graphql/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "40443",
+					"path": [
+						"api",
+						"graphql",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
