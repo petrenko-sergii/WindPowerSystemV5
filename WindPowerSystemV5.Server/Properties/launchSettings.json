@@ -25,6 +25,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
+      //"launchUrl": "api/graphql",
       "applicationUrl": "https://localhost:40443;http://localhost:40080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",

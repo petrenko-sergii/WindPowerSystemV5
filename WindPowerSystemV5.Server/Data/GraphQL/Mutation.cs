@@ -166,4 +166,27 @@ public class Mutation
         await context.SaveChangesAsync();
         return turbineTypeToUpdate;
     }
+
+    /// <summary>
+    ﻿/// Delete a TurbineType
+    /// </summary>
+    [Serial]
+    [Authorize(Roles = ["Administrator"])]
+    public async Task<string> DeleteTurbineType(
+        [Service] ApplicationDbContext context, int id)
+    {
+        var turbineType = await context.TurbineTypes
+            .Where(t => t.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (turbineType == null)
+        {
+            throw new NotFoundException($"TurbineType with ID {id} is not found.");
+        }
+
+        context.TurbineTypes.Remove(turbineType);
+        await context.SaveChangesAsync();
+
+        return $"TurbineType {turbineType.Model} with ID {turbineType.Id} was deleted ";
+    }
 }

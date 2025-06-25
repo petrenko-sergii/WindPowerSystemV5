@@ -79,4 +79,27 @@ public class TurbineMutation
             TurbineTypeId = newTurbine.TurbineTypeId
         };
     }
+
+    /// <summary>
+    ﻿/// Delete a Turbine
+    /// </summary>
+    [Serial]
+    [Authorize(Roles = ["Administrator"])]
+    public async Task<string> DeleteTurbine(
+        [Service] ApplicationDbContext context, int id)
+    {
+        var turbine = await context.Turbines
+            .Where(t => t.Id == id)
+            .FirstOrDefaultAsync();
+
+        if (turbine is null)
+        {
+            throw new NotFoundException($"Turbine with ID {id} is not found.");
+        }
+
+        context.Turbines.Remove(turbine);
+        await context.SaveChangesAsync();
+
+        return $"Turbine {turbine.SerialNumber} with ID {id} was deleted.";
+    }
 }
