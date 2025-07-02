@@ -7,6 +7,7 @@ using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using Microsoft.AspNetCore.Identity;
 using WindPowerSystemV5.Server.Data.Models;
+using WindPowerSystemV5.Server.Data.MongoDbModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WindPowerSystemV5.Server.Data.GraphQL;
@@ -17,7 +18,6 @@ using WindPowerSystemV5.Server.Mappings;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Caching.Memory;
 using WindPowerSystemV5.Server.Utils.Exceptions;
-using Microsoft.Azure.Cosmos;
 using WindPowerSystemV5.Server.Services;
 using WindPowerSystemV5.Server.Services.Interfaces;
 
@@ -73,6 +73,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         //    .EnableDetailedErrors()
         //#endif
 );
+
+builder.Services.Configure<NewsDbSettings>(
+    builder.Configuration.GetSection("MongoDB"));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

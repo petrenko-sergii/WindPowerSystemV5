@@ -1,6 +1,8 @@
 # WindPowerSystemV5
 
-WindPowerSystemV5 is a test web application developed as a learning project to explore integration between **ASP.NET Core 8, Angular 17, Entity Framework Core and databases: MSSQL Server and NoSQL Azure Cosmos DB**. 
+WindPowerSystemV5 is a test web application developed as a learning project to explore integration between **ASP.NET Core 8, Angular 17, Entity Framework Core and databases: MSSQL Server and NoSQL: Azure Cosmos DB, MongoDB**.
+
+The project supports both **REST and GraphQL** approaches for backend–frontend communication.
 
 This app is developed according to the book [“ASP.NET Core 8 and Angular (6th edition, 2024)”](https://www.packtpub.com/en-us/product/aspnet-core-8-and-angular-9781805129936) by Valerio De Sanctis. 
 

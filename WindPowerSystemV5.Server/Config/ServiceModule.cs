@@ -17,6 +17,7 @@ public static class ServiceModule
     {
         services.AddScoped<ICityService, CityService>();
         services.AddScoped<IMaintenanceRecordService, MaintenanceRecordService>();
+        services.AddScoped<INewsService, NewsService>();
         services.AddScoped<ITurbineConfigSnapshotService, TurbineConfigSnapshotService>();
         services.AddScoped<ITurbineService, TurbineService>();
     }
