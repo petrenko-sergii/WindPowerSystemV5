@@ -25,8 +25,7 @@ public class NewsService : INewsService
         var mongoDatabase = mongoClient.GetDatabase(
             newsDbSettings.Value.DatabaseName);
 
-        _newsCollection = mongoDatabase.GetCollection<News>(
-            newsDbSettings.Value.NewsCollectionName);
+        _newsCollection = mongoDatabase.GetCollection<News>(CollectionNames.News);
     }
 
     public async Task<List<News>> Get()
