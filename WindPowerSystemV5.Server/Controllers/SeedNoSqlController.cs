@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Cosmos;
 using Microsoft.AspNetCore.Mvc;
-using WindPowerSystemV5.Server.Data.NoSqlModels;
+using WindPowerSystemV5.Server.Data.CosmosDbModels;
 using WindPowerSystemV5.Server.Services.Interfaces;
 
 namespace WindPowerSystemV5.Server.Controllers;

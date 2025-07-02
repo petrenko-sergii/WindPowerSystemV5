@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace WindPowerSystemV5.Server.Data.NoSqlModels;
+namespace WindPowerSystemV5.Server.Data.CosmosDbModels;
 
 public class TurbineCharacteristic
 {

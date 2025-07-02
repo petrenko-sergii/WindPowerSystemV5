@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WindPowerSystemV5.Server.Data.CosmosDbModels;
 using WindPowerSystemV5.Server.Data.DTOs;
-using WindPowerSystemV5.Server.Data.NoSqlModels;
 using WindPowerSystemV5.Server.Services.Interfaces;
 using WindPowerSystemV5.Server.Utils.Exceptions;
 

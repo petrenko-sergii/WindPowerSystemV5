@@ -25,7 +25,7 @@ public class MaintenanceRecordDTO
 
     public int DowntimeMinutes { get; set; }
 
-    public List<string> PartsReplaced { get; set; }
+    public List<string> PartsReplaced { get; set; } = [];
 
     public string EventTrigger { get; set; } = null!;
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using WindPowerSystemV5.Server.Data.DTOs;
-using WindPowerSystemV5.Server.Data.NoSqlModels;
+using WindPowerSystemV5.Server.Data.CosmosDbModels;
 
 namespace WindPowerSystemV5.Server.Mappings;
 
