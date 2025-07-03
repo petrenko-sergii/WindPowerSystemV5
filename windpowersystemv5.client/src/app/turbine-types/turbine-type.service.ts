@@ -99,6 +99,18 @@ export class TurbineTypeService {
     return this.http.post<TurbineType>(url, item);
   }
 
+  createWithInfoFile(item: TurbineType, infoFile: File ): Observable<TurbineType> {
+    const url = this.getUrl('api/turbine-types');
+
+    const formData = new FormData();
+    formData.append('manufacturer', item.manufacturer);
+    formData.append('model', item.model);
+    formData.append('capacity', item.capacity.toString());
+    formData.append('infoFile', infoFile, infoFile.name);
+
+    return this.http.post<TurbineType>(url, formData);
+  }
+
   protected getUrl(url: string) {
     return environment.baseUrl + url;
   }

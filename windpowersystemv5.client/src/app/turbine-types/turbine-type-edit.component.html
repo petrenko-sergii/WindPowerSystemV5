@@ -33,8 +33,23 @@
       </mat-error>
     </mat-form-field>
 
+    <!-- File Upload (only when creating) -->
+    <div *ngIf="!id" class="file-upload">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Upload Info File (.pdf, .jpeg, .jpg)</mat-label>
+        <input matInput type="text" [value]="selectedFileName" placeholder="No file selected" readonly>
+        <input type="file"
+               id="file"
+               (change)="onFileSelected($event)"
+               accept=".pdf,.jpeg,.jpg"
+               hidden #fileInput />
+        <button mat-button matSuffix type="button" (click)="fileInput.click()">Browse</button>
+      </mat-form-field>
+      <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
+    </div>
+
     <div>
-      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid">
+      <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid || (!id && !selectedFile)">
         {{ id ? "Save" : "Create" }}
       </button>
       <button mat-flat-button color="secondary" [routerLink]="['/turbine-types']">

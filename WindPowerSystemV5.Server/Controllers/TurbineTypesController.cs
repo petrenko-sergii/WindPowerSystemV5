@@ -1,9 +1,11 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WindPowerSystemV5.Server.Data;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.DTOs;
-using Microsoft.AspNetCore.Authorization;
+using WindPowerSystemV5.Server.ViewModels;
 
 namespace WindPowerSystemV5.Server.Controllers;
 
@@ -12,12 +14,17 @@ namespace WindPowerSystemV5.Server.Controllers;
 public class TurbineTypesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    
+    private readonly IMapper _mapper;
+
     public ILogger<TurbineTypesController> Logger { get; set; }
 
-    public TurbineTypesController(ApplicationDbContext context, ILogger<TurbineTypesController> logger)
+    public TurbineTypesController(
+        ApplicationDbContext context, 
+        ILogger<TurbineTypesController> logger,
+        IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
         Logger = logger;
         Logger.LogInformation("TurbineTypesController initialized.");
     }
@@ -52,8 +59,12 @@ public class TurbineTypesController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "RegisteredUser")]
-    public async Task<ActionResult<TurbineType>> Create(TurbineType turbineType)
+    public async Task<ActionResult<TurbineType>> Create(
+        [FromForm] TurbineTypeCreationRequest turbineTypeCreationRequest,
+        IFormFile infoFile)
     {
+        var turbineType = _mapper.Map<TurbineType>(turbineTypeCreationRequest);
+
         _context.TurbineTypes.Add(turbineType);
         await _context.SaveChangesAsync();
 
