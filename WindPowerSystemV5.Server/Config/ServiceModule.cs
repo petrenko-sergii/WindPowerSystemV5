@@ -11,6 +11,7 @@ public static class ServiceModule
     {
         services.AddScoped<ICityRepository, CityRepository>();
         services.AddScoped<ITurbineRepository, TurbineRepository>();
+        services.AddScoped<ITurbineTypeRepository, TurbineTypeRepository>();
     }
 
     public static void RegisterServices(this IServiceCollection services)
@@ -20,5 +21,6 @@ public static class ServiceModule
         services.AddScoped<INewsService, NewsService>();
         services.AddScoped<ITurbineConfigSnapshotService, TurbineConfigSnapshotService>();
         services.AddScoped<ITurbineService, TurbineService>();
+        services.AddScoped<ITurbineTypeService, TurbineTypeService>();
     }
 }

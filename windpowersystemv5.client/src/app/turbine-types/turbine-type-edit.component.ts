@@ -60,9 +60,9 @@ export class TurbineTypeEditComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const validExtensions = ['pdf', 'jpeg', 'jpg'];
-      const ext = file.name.split('.').pop()?.toLowerCase();
+      const extension = file.name.split('.').pop()?.toLowerCase();
 
-      if (ext && validExtensions.includes(ext)) {
+      if (extension && validExtensions.includes(extension)) {
         this.selectedFile = file;
         this.selectedFileName = file.name;
         this.fileError = '';
@@ -94,8 +94,8 @@ export class TurbineTypeEditComponent implements OnInit {
       } else {
         // ADD NEW mode
         this.turbineTypeService.createWithInfoFile(turbineType, this.selectedFile!).subscribe({
-          next: (result) => {
-            console.log("Turbine type " + result.id + " has been created.");
+          next: (id) => {
+            console.log("Turbine type " + id + " has been created.");
             this.router.navigate(['/turbine-types']);
           },
           error: (error) => console.error(error)

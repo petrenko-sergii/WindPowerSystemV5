@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.1" />
     <PackageReference Include="EFCore.BulkExtensions" Version="8.0.1" />
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.7.0" />

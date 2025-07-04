@@ -51,6 +51,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
+builder.Services.AddOptions<BlobStorageOptions>()
+    .BindConfiguration("AzureBlobStorage");
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -95,6 +98,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<ICosmosDbContext, CosmosDbContext>();
 builder.Services.AddScoped<JwtHandler>();
+builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
 builder.Services.RegisterRepositories();
 builder.Services.RegisterServices();
 builder.Services.AddSingleton(AutomapperConfig.CreateMapper());
