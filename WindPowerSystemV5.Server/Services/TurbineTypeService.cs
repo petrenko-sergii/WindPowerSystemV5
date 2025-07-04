@@ -24,7 +24,7 @@ public class TurbineTypeService : ITurbineTypeService
     }
 
     public async Task<int> Create(
-        TurbineTypeCreationRequest turbineTypeToCreate, 
+        TurbineTypeCreationRequest turbineTypeToCreate,
         IFormFile infoFile)
     {
         if(infoFile is null || infoFile.Length == 0)
@@ -34,6 +34,8 @@ public class TurbineTypeService : ITurbineTypeService
 
         var turbineType = _mapper.Map<TurbineType>(turbineTypeToCreate);
         var uri = await _blobStorageService.UploadFileAsync(infoFile);
+
+        turbineType.InfoFileUri = uri;
 
         return await _turbineTypeRepository.Create(turbineType);
     }
