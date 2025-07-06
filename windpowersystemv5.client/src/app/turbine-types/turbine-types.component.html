@@ -42,6 +42,17 @@
     <td mat-cell *matCellDef="let turbineType">{{turbineType.turbineQty}}</td>
   </ng-container>
 
+  <!-- InfoFile Column -->
+  <ng-container matColumnDef="infoFile">
+    <th mat-header-cell *matHeaderCellDef>InfoFile</th>
+    <td mat-cell *matCellDef="let turbineType">
+      <button mat-button
+              (click)="downloadInfoFile(turbineType.infoFileUri)">
+        Download
+      </button>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

@@ -6,6 +6,7 @@ using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.ViewModels;
 using WindPowerSystemV5.Server.Services.Interfaces;
+using WindPowerSystemV5.Server.Utils.Exceptions;
 namespace WindPowerSystemV5.Server.Controllers;
 
 [Route("api/turbine-types")]
@@ -14,16 +15,19 @@ public class TurbineTypesController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ITurbineTypeService _turbineTypeService;
+    private readonly IBlobStorageService _blobStorageService;
 
     public ILogger<TurbineTypesController> Logger { get; set; }
 
     public TurbineTypesController(
         ApplicationDbContext context, 
         ILogger<TurbineTypesController> logger,
-        ITurbineTypeService turbineTypeService)
+        ITurbineTypeService turbineTypeService,
+        IBlobStorageService blobStorageService)
     {
         _context = context;
         _turbineTypeService = turbineTypeService;
+        _blobStorageService = blobStorageService;
         Logger = logger;
         Logger.LogInformation("TurbineTypesController initialized.");
     }
@@ -38,6 +42,7 @@ public class TurbineTypesController : ControllerBase
                 Manufacturer = t.Manufacturer,
                 Model = t.Model,
                 Capacity = t.Capacity,
+                InfoFileUri = t.InfoFileUri,
                 TurbineQty = t.Turbines!.Count
             })
             .ToListAsync();
@@ -54,6 +59,23 @@ public class TurbineTypesController : ControllerBase
         }
 
         return turbineType;
+    }
+
+    [HttpGet("download-info-file")]
+    public async Task<IActionResult> DownloadInfoFile([FromQuery] string uri)
+    {
+        if (string.IsNullOrWhiteSpace(uri))
+        {
+            throw new BadRequestException("File URI is required.");
+        }
+
+        var fileResult = await _blobStorageService.DownloadFileAsync(uri);
+        if (fileResult is null)
+        {
+            throw new NotFoundException($"Info-file with the next uri \"{uri}\" is not found.");
+        }
+
+        return fileResult;
     }
 
     [HttpPost]

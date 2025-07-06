@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Apollo, gql } from 'apollo-angular'; 
 
@@ -21,6 +21,42 @@ export class TurbineTypeService {
   getData(): Observable<TurbineType[]> {
     const url = this.getUrl('api/turbine-types');
     return this.http.get<TurbineType[]>(url);
+  }
+
+  downloadInfoFile(uri: string): void {
+    const params = new HttpParams().set('uri', uri);
+    this.http.get(`api/turbine-types/download-info-file`, {
+      params,
+      responseType: 'blob',
+      observe: 'response'
+    }).subscribe({
+      next: (response) => {
+        const filename = this.getFileNameFromContentDisposition(response);
+        const blob = new Blob([response.body as BlobPart], { type: response.body?.type });
+
+        // Create download link
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename ?? 'downloaded-file';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      },
+      error: (err) => {
+        console.error('File download failed', err);
+      }
+    });
+  }
+
+  private getFileNameFromContentDisposition(response: any): string | null {
+    const contentDisposition = response.headers.get('Content-Disposition');
+    if (contentDisposition) {
+      const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+      if (matches && matches[1]) {
+        return matches[1].replace(/['"]/g, '');
+      }
+    }
+    return null;
   }
 
   // GraphQL Approach

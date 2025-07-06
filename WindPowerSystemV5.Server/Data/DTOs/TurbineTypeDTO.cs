@@ -10,5 +10,7 @@ public class TurbineTypeDTO
 
     public float Capacity { get; set; }
 
+    public string InfoFileUri { get; set; } = string.Empty;
+
     public int TurbineQty { get; set; }
 }

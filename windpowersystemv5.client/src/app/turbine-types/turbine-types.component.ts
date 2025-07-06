@@ -9,7 +9,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './turbine-types.component.scss'
 })
 export class TurbineTypesComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'manufacturer', 'model', 'capacity', 'turbineQty'];
+  displayedColumns: string[] = ['id', 'manufacturer', 'model', 'capacity', 'turbineQty', 'infoFile'];
   public turbineTypes!: TurbineType[];
 
   constructor(
@@ -23,6 +23,10 @@ export class TurbineTypesComponent implements OnInit {
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
+  }
+
+  downloadInfoFile(infoFileUrl: string) {
+    this.turbineTypeService.downloadInfoFile(infoFileUrl);
   }
 
   private loadTurbineTypes(): void {

@@ -36,9 +36,9 @@ public class BlobStorageService : IBlobStorageService
         return blobClient.Uri.ToString();
     }
 
-    public async Task<FileContentResult> DownloadFileAsync(string url)
+    public async Task<FileContentResult> DownloadFileAsync(string uri)
     {
-        Uri blobUri = new Uri(url);
+        Uri blobUri = new Uri(uri);
         StorageSharedKeyCredential credentials = new(
             _blobStorageOptions.StorageAccountName,
             _blobStorageOptions.StorageAccountKey);
