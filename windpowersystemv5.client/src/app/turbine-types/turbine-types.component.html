@@ -46,10 +46,11 @@
   <ng-container matColumnDef="infoFile">
     <th mat-header-cell *matHeaderCellDef>InfoFile</th>
     <td mat-cell *matCellDef="let turbineType">
-      <button mat-button
-              (click)="downloadInfoFile(turbineType.infoFileUri)">
+      <a href="#"
+         (click)="downloadInfoFile(turbineType.fileName); $event.preventDefault();"
+         style="color: #3f51b5; text-decoration: underline; ">
         Download
-      </button>
+      </a>
     </td>
   </ng-container>
 

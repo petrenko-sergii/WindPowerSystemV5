@@ -33,10 +33,25 @@ public class TurbineTypeService : ITurbineTypeService
         }
 
         var turbineType = _mapper.Map<TurbineType>(turbineTypeToCreate);
-        var uri = await _blobStorageService.UploadFileAsync(infoFile);
+        var fileName = await _blobStorageService.UploadFileAsync(infoFile);
 
-        turbineType.InfoFileUri = uri;
+        turbineType.FileName = fileName;
 
         return await _turbineTypeRepository.Create(turbineType);
+    }
+
+    public async Task<string> NameInfoFile(string fileName)
+    {
+        var turbineType = await _turbineTypeRepository.GetByFileName(fileName);
+
+        if (turbineType is null)
+        {
+            throw new NotFoundException($"Turbine type with file name \"{fileName}\" not found.");
+        }
+
+        var extension = System.IO.Path.GetExtension(fileName);
+
+        return $"{turbineType.Manufacturer}_{turbineType.Model}{extension}"
+            .Replace(" ","_");
     }
 }

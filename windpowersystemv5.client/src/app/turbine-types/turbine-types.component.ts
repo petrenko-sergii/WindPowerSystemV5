@@ -25,8 +25,8 @@ export class TurbineTypesComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
-  downloadInfoFile(infoFileUrl: string) {
-    this.turbineTypeService.downloadInfoFile(infoFileUrl);
+  downloadInfoFile(infoFileName: string) {
+    this.turbineTypeService.downloadInfoFile(infoFileName);
   }
 
   private loadTurbineTypes(): void {

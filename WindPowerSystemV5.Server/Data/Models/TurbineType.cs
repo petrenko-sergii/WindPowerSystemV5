@@ -19,7 +19,7 @@ public class TurbineType
     public float Capacity { get; set; }
 
     [Required]
-    public string InfoFileUri { get; set; } = string.Empty;
+    public string FileName { get; set; } = string.Empty;
 
     public ICollection<Turbine>? Turbines { get; set; }
 }

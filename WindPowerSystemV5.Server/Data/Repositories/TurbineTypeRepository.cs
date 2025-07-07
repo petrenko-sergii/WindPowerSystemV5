@@ -1,4 +1,5 @@
-﻿using WindPowerSystemV5.Server.Data.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.Repositories.Interfaces;
 
 namespace WindPowerSystemV5.Server.Data.Repositories;
@@ -18,5 +19,11 @@ public class TurbineTypeRepository : ITurbineTypeRepository
         await _context.SaveChangesAsync();
 
         return turbineType.Id;
+    }
+
+    public async Task<TurbineType?> GetByFileName(string fileName)
+    {
+        return  await _context.TurbineTypes
+            .SingleOrDefaultAsync(t => t.FileName == fileName);
     }
 }

@@ -28,17 +28,21 @@ public class BlobStorageService : IBlobStorageService
         await containerClient.CreateIfNotExistsAsync();
         await containerClient.SetAccessPolicyAsync(Azure.Storage.Blobs.Models.PublicAccessType.None);
 
-        var blobClient = containerClient.GetBlobClient($"{Guid.NewGuid().ToString()}{extension}");
+        var fileName = $"{Guid.NewGuid()}{extension}";
+
+        var blobClient = containerClient.GetBlobClient(fileName);
 
         await using var stream = file.OpenReadStream();
         await blobClient.UploadAsync(stream, true);
 
-        return blobClient.Uri.ToString();
+        return fileName;
     }
 
-    public async Task<FileContentResult> DownloadFileAsync(string uri)
+    public async Task<FileContentResult> DownloadFileAsync(string fileName)
     {
-        Uri blobUri = new Uri(uri);
+        var url = GetFileUri(fileName);
+
+        Uri blobUri = new Uri(url);
         StorageSharedKeyCredential credentials = new(
             _blobStorageOptions.StorageAccountName,
             _blobStorageOptions.StorageAccountKey);
@@ -57,5 +61,16 @@ public class BlobStorageService : IBlobStorageService
         {
             FileDownloadName = blobUri.Segments.Last()
         };
+    }
+
+    private string GetFileUri(string fileName)
+    {
+        var uri = new UriBuilder
+        {
+            Scheme = "https",
+            Host = $"{_blobStorageOptions.StorageAccountName}.blob.core.windows.net",
+            Path = $"{_blobStorageOptions.ContainerName}/{fileName}"
+        };
+        return uri.ToString();
     }
 }

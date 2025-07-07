@@ -7,6 +7,7 @@ using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.ViewModels;
 using WindPowerSystemV5.Server.Services.Interfaces;
 using WindPowerSystemV5.Server.Utils.Exceptions;
+
 namespace WindPowerSystemV5.Server.Controllers;
 
 [Route("api/turbine-types")]
@@ -42,7 +43,7 @@ public class TurbineTypesController : ControllerBase
                 Manufacturer = t.Manufacturer,
                 Model = t.Model,
                 Capacity = t.Capacity,
-                InfoFileUri = t.InfoFileUri,
+                FileName = t.FileName,
                 TurbineQty = t.Turbines!.Count
             })
             .ToListAsync();
@@ -62,18 +63,21 @@ public class TurbineTypesController : ControllerBase
     }
 
     [HttpGet("download-info-file")]
-    public async Task<IActionResult> DownloadInfoFile([FromQuery] string uri)
+    public async Task<IActionResult> DownloadInfoFile([FromQuery] string fileName)
     {
-        if (string.IsNullOrWhiteSpace(uri))
+        if (string.IsNullOrWhiteSpace(fileName))
         {
-            throw new BadRequestException("File URI is required.");
+            throw new BadRequestException("File name is required.");
         }
 
-        var fileResult = await _blobStorageService.DownloadFileAsync(uri);
+        var fileResult = await _blobStorageService.DownloadFileAsync(fileName);
+
         if (fileResult is null)
         {
-            throw new NotFoundException($"Info-file with the next uri \"{uri}\" is not found.");
+            throw new NotFoundException($"Info-file with the next name \"{fileName}\" is not found.");
         }
+
+        fileResult.FileDownloadName = await _turbineTypeService.NameInfoFile(fileName); ;
 
         return fileResult;
     }

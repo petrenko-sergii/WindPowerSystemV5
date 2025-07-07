@@ -3,6 +3,6 @@ export interface TurbineType {
   manufacturer: string;
   model: string;
   capacity: number;
-  infoFileUri: string;
+  fileName: string;
   turbineQty: number;
 }

@@ -23,8 +23,8 @@ export class TurbineTypeService {
     return this.http.get<TurbineType[]>(url);
   }
 
-  downloadInfoFile(uri: string): void {
-    const params = new HttpParams().set('uri', uri);
+  downloadInfoFile(fileName: string): void {
+    const params = new HttpParams().set('fileName', fileName);
     this.http.get(`api/turbine-types/download-info-file`, {
       params,
       responseType: 'blob',
