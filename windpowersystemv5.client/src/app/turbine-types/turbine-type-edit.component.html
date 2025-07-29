@@ -2,52 +2,57 @@
   <h1>{{title}}</h1>
   <p *ngIf="id && !turbineType"><em>Loading...</em></p>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div [ngClass]="{'turbine-type-row': id}">
+      <div [ngClass]="{'half-width': id}" #TurbineTypeData>
+        <!-- Manufacturer -->
+        <mat-form-field>
+          <mat-label>Manufacturer:</mat-label>
+          <input matInput formControlName="manufacturer" required placeholder="Type a manufacturer">
+          <mat-error *ngIf="form.controls['manufacturer'].errors?.['required']">
+            Manufacturer is required.
+          </mat-error>
+        </mat-form-field>
 
-    <!-- Manufacturer -->
-    <mat-form-field>
-      <mat-label>Manufacturer:</mat-label>
-      <input matInput formControlName="manufacturer" required placeholder="Type a manufacturer">
-      <mat-error *ngIf="form.controls['manufacturer'].errors?.['required']">
-        Manufacturer is required.
-      </mat-error>
-    </mat-form-field>
+        <!-- Model -->
+        <mat-form-field>
+          <mat-label>Model:</mat-label>
+          <input matInput formControlName="model" required placeholder="Type a model">
+          <mat-error *ngIf="form.controls['model'].errors?.['required']">
+            Model is required.
+          </mat-error>
+        </mat-form-field>
 
-    <!-- Model -->
-    <mat-form-field>
-      <mat-label>Model:</mat-label>
-      <input matInput formControlName="model" required placeholder="Type a model">
-      <mat-error *ngIf="form.controls['model'].errors?.['required']">
-        Model is required.
-      </mat-error>
-    </mat-form-field>
+        <!-- Capacity -->
+        <mat-form-field>
+          <mat-label>Capacity (kW):</mat-label>
+          <input matInput type="number" formControlName="capacity" required placeholder="Insert capacity">
+          <mat-error *ngIf="form.controls['capacity'].errors?.['required']">
+            Capacity is required.
+          </mat-error>
+          <mat-error *ngIf="form.controls['capacity'].errors?.['min']">
+            Capacity must be a positive number.
+          </mat-error>
+        </mat-form-field>
 
-    <!-- Capacity -->
-    <mat-form-field>
-      <mat-label>Capacity (kW):</mat-label>
-      <input matInput type="number" formControlName="capacity" required placeholder="Insert capacity">
-      <mat-error *ngIf="form.controls['capacity'].errors?.['required']">
-        Capacity is required.
-      </mat-error>
-      <mat-error *ngIf="form.controls['capacity'].errors?.['min']">
-        Capacity must be a positive number.
-      </mat-error>
-    </mat-form-field>
-
-    <!-- File Upload (only when creating) -->
-    <div *ngIf="!id" class="file-upload">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Upload Info File (.pdf, .jpeg, .jpg)</mat-label>
-        <input matInput type="text" [value]="selectedFileName" placeholder="No file selected" readonly>
-        <input type="file"
-               id="file"
-               (change)="onFileSelected($event)"
-               accept=".pdf,.jpeg,.jpg"
-               hidden #fileInput />
-        <button mat-button matSuffix type="button" (click)="fileInput.click()">Browse</button>
-      </mat-form-field>
-      <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
+        <!-- File Upload (only when creating) -->
+        <div *ngIf="!id" class="file-upload">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Upload Info File (.pdf, .jpeg, .jpg)</mat-label>
+            <input matInput type="text" [value]="selectedFileName" placeholder="No file selected" readonly>
+            <input type="file"
+                   id="file"
+                   (change)="onFileSelected($event)"
+                   accept=".pdf,.jpeg,.jpg"
+                   hidden #fileInput />
+            <button mat-button matSuffix type="button" (click)="fileInput.click()">Browse</button>
+          </mat-form-field>
+          <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
+        </div>
+      </div>
+      <div *ngIf="id" #TurbineTypeImage>
+        <p>Image</p>
+      </div>
     </div>
-
     <div>
       <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid || (!id && !selectedFile)">
         {{ id ? "Save" : "Create" }}

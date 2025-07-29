@@ -5,4 +5,5 @@ export interface TurbineType {
   capacity: number;
   fileName: string;
   turbineQty: number;
+  infoFile: File;
 }

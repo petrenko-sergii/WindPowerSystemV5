@@ -21,7 +21,6 @@ export class HealthCheckService {
   public startConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
-      // .withUrl('https://localhost:40443/api/health-hub', { withCredentials: false })
       .withUrl(environment.baseUrl + 'api/health-hub', { withCredentials: false })
       .build();
 

@@ -2,3 +2,14 @@ mat-form-field {
   display: block;
   margin: 10px 0;
 }
+
+.half-width {
+  width: 50vw;
+  min-width: 300px;
+  max-width: 100%;
+}
+
+.turbine-type-row {
+  display: flex;
+  align-items: flex-start;
+}
