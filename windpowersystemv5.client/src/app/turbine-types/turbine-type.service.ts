@@ -59,6 +59,9 @@ export class TurbineTypeService {
       if (fileName.toLowerCase().endsWith('.jpg') && blob) {
         return new File([blob], fileName, { type: 'image/jpeg' });
       }
+      else if (fileName.toLowerCase().endsWith('.pdf') && blob) {
+        return new File([blob], fileName, { type: 'application/pdf' });
+      }
       return null;
     }).catch(() => null);
   }

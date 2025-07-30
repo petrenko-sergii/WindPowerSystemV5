@@ -3,6 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TurbineType } from './turbine-type';
 import { TurbineTypeService } from './turbine-type.service';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import 'pdfjs-dist/build/pdf.worker.entry';
+
+(pdfjsLib as any).GlobalWorkerOptions.workerSrc =
+  // @ts-ignore
+  window['pdfjsWorkerSrc'] ||
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 @Component({
   selector: 'app-turbine-type-edit',
@@ -18,6 +25,7 @@ export class TurbineTypeEditComponent implements OnInit {
   selectedFileName: string = '';
   fileError: string = '';
   turbineImageUrl?: string;
+  turbinePdfUrl?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -61,11 +69,31 @@ export class TurbineTypeEditComponent implements OnInit {
 
     this.turbineTypeService.getInfoFile(fileName).then(file => {
       if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.turbineImageUrl = reader.result as string;
-        };
-        reader.readAsDataURL(file);
+        if (file.type === "image/jpeg") {
+          const reader = new FileReader();
+          reader.onload = () => {
+            this.turbineImageUrl = reader.result as string;
+          };
+          reader.readAsDataURL(file);
+        }
+        else if (file.type === "application/pdf"){
+          const fileReader = new FileReader();
+          fileReader.onload = async () => {
+            const typedarray = new Uint8Array(fileReader.result as ArrayBuffer);
+            const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+            const page = await pdf.getPage(1);
+
+            const viewport = page.getViewport({ scale: 1.5 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d')!;
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            await page.render({ canvasContext: context, viewport }).promise;
+            this.turbinePdfUrl = canvas.toDataURL();
+          };
+          fileReader.readAsArrayBuffer(file);
+        }
       }
     });
   }
