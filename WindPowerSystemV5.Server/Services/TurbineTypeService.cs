@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.Repositories.Interfaces;
 using WindPowerSystemV5.Server.Services.Interfaces;
@@ -21,6 +22,20 @@ public class TurbineTypeService : ITurbineTypeService
         _mapper = mapper;
         _turbineTypeRepository = turbineTypeRepository;
         _blobStorageService = blobStorageService;
+    }
+
+    public async Task<TurbineTypeDTO?> Get(int id)
+    {
+        var turbineType = await _turbineTypeRepository.Get(id);
+
+        if (turbineType is null)
+        {
+            throw new NotFoundException($"Turbine type with id \"{id}\" not found.");
+        }
+
+        var turbineTypeDTO = _mapper.Map<TurbineTypeDTO>(turbineType);
+
+        return turbineTypeDTO;
     }
 
     public async Task<int> Create(

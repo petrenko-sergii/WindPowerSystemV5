@@ -13,6 +13,11 @@ public class TurbineTypeRepository : ITurbineTypeRepository
         _context = context;
     }
 
+    public async Task<TurbineType?> Get(int id)
+    {
+        return await _context.TurbineTypes.FindAsync(id);
+    }
+
     public async Task<int> Create(TurbineType turbineType)
     {
         _context.TurbineTypes.Add(turbineType);

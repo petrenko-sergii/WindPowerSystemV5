@@ -50,16 +50,9 @@ public class TurbineTypesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TurbineType>> Get(int id)
+    public async Task<ActionResult<TurbineTypeDTO?>> Get(int id)
     {
-        var turbineType = await _context.TurbineTypes.FindAsync(id);
-
-        if (turbineType == null)
-        {
-            return NotFound();
-        }
-
-        return turbineType;
+        return await _turbineTypeService.Get(id);
     }
 
     [HttpGet("download-info-file")]

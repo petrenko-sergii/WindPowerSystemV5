@@ -17,6 +17,7 @@ export class TurbineTypeEditComponent implements OnInit {
   selectedFile: File | null = null;
   selectedFileName: string = '';
   fileError: string = '';
+  turbineImageUrl?: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -32,6 +33,7 @@ export class TurbineTypeEditComponent implements OnInit {
     });
 
     this.loadData();
+    this.loadTurbineImage(); 
   }
 
   loadData() {
@@ -52,6 +54,19 @@ export class TurbineTypeEditComponent implements OnInit {
       // ADD NEW MODE
       this.title = "Create a new Turbine Type";
     }
+  }
+
+  loadTurbineImage() {
+    const fileName = 'aaa53650-9a6e-4751-902c-00af636e671b.jpg';
+    this.turbineTypeService.getInfoFile(fileName).then(file => {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.turbineImageUrl = reader.result as string;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
   }
 
   onFileSelected(event: Event) {

@@ -50,7 +50,7 @@
         </div>
       </div>
       <div *ngIf="id" #TurbineTypeImage>
-        <p>Image</p>
+        <img *ngIf="turbineImageUrl" [src]="turbineImageUrl" alt="Turbine Type Image" class="turbine-type-image">
       </div>
     </div>
     <div>

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Apollo, gql } from 'apollo-angular'; 
+import { Apollo, gql } from 'apollo-angular';
+import { lastValueFrom } from 'rxjs';
 
 import { TurbineType } from './turbine-type';
 import { environment } from '../../environments/environment';
@@ -46,6 +47,20 @@ export class TurbineTypeService {
         console.error('File download failed', err);
       }
     });
+  }
+
+  getInfoFile(fileName: string): Promise<File | null> {
+    return lastValueFrom(
+      this.http.get(`api/turbine-types/download-info-file`, {
+        params: { fileName },
+        responseType: 'blob'
+      })
+    ).then((blob) => {
+      if (fileName.toLowerCase().endsWith('.jpg') && blob) {
+        return new File([blob], fileName, { type: 'image/jpeg' });
+      }
+      return null;
+    }).catch(() => null);
   }
 
   private getFileNameFromContentDisposition(response: any): string | null {
@@ -94,6 +109,7 @@ export class TurbineTypeService {
               manufacturer
               model
               capacity
+              fileName
             }
           }
         `,

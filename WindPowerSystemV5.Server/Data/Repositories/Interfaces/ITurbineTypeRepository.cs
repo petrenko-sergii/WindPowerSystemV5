@@ -4,7 +4,9 @@ namespace WindPowerSystemV5.Server.Data.Repositories.Interfaces;
 
 public interface ITurbineTypeRepository
 {
+    Task<TurbineType?> Get(int id);
+
     Task<int> Create(TurbineType turbineType);
-    
+
     Task<TurbineType?> GetByFileName(string fileName);
 }
