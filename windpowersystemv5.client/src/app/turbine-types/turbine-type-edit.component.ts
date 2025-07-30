@@ -33,7 +33,6 @@ export class TurbineTypeEditComponent implements OnInit {
     });
 
     this.loadData();
-    this.loadTurbineImage(); 
   }
 
   loadData() {
@@ -45,6 +44,7 @@ export class TurbineTypeEditComponent implements OnInit {
       this.turbineTypeService.get(this.id).subscribe({
         next: (result) => {
           this.turbineType = result;
+          this.loadTurbineImage();
           this.title = "Edit - " + this.turbineType.model;
           this.form.patchValue(this.turbineType);
         },
@@ -57,7 +57,8 @@ export class TurbineTypeEditComponent implements OnInit {
   }
 
   loadTurbineImage() {
-    const fileName = 'aaa53650-9a6e-4751-902c-00af636e671b.jpg';
+    const fileName = this.turbineType?.fileName!;
+
     this.turbineTypeService.getInfoFile(fileName).then(file => {
       if (file) {
         const reader = new FileReader();
