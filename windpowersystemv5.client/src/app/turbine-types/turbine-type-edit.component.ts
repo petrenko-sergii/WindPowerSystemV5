@@ -98,6 +98,10 @@ export class TurbineTypeEditComponent implements OnInit {
     });
   }
 
+  downloadInfoFile(infoFileName: string) {
+    this.turbineTypeService.downloadInfoFile(infoFileName);
+  }
+
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
 
