@@ -26,6 +26,7 @@ export class TurbineTypeEditComponent implements OnInit {
   fileError: string = '';
   turbineImageUrl?: string;
   turbinePdfUrl?: string;
+  imageLoaded: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -73,6 +74,7 @@ export class TurbineTypeEditComponent implements OnInit {
           const reader = new FileReader();
           reader.onload = () => {
             this.turbineImageUrl = reader.result as string;
+            this.imageLoaded = true;
           };
           reader.readAsDataURL(file);
         }
@@ -91,6 +93,7 @@ export class TurbineTypeEditComponent implements OnInit {
 
             await page.render({ canvasContext: context, viewport }).promise;
             this.turbinePdfUrl = canvas.toDataURL();
+            this.imageLoaded = true;
           };
           fileReader.readAsArrayBuffer(file);
         }
