@@ -3,11 +3,11 @@ import { News } from './news';
 import { NewsService } from './news.service';
 
 @Component({
-  selector: 'app-news',
-  templateUrl: './news.component.html',
-  styleUrl: './news.component.scss'
+  selector: 'app-news-list',
+  templateUrl: './news-list.component.html',
+  styleUrl: './news-list.component.scss'
 })
-export class NewsComponent implements OnInit {
+export class NewsListComponent implements OnInit {
   newsList: News[] = [];
 
   constructor(private newsService: NewsService) {}
