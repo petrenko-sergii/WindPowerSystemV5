@@ -1,0 +1,11 @@
+.news-list-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-height: 60vh;
+}
+
+mat-list {
+  text-align: left;
+}
