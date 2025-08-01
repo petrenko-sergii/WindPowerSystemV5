@@ -12,12 +12,17 @@ export class NewsService {
     protected http: HttpClient
   ) { }
 
-  getAllNews(): Observable<News[]> {
+  getAll(): Observable<News[]> {
     const url = this.getUrl('api/News');
     return this.http.get<News[]>(url);
   }
 
   protected getUrl(url: string) {
     return environment.baseUrl + url;
+  }
+
+  get(id: string): Observable<News> {
+    const url = this.getUrl(`api/News/${id}`);
+    return this.http.get<News>(url);
   }
 }

@@ -3,9 +3,9 @@
 <div class="news-list-center">
   <mat-list>
     <mat-list-item *ngFor="let news of newsList">
-      <div mat-line>
+      <a mat-line [routerLink]="['/news', news.id]" class="news-link">
         <strong>{{ news.title }}</strong>
-      </div>
+      </a>
     </mat-list-item>
   </mat-list>
 </div>

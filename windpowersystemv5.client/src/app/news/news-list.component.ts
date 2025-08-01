@@ -17,7 +17,7 @@ export class NewsListComponent implements OnInit {
   }
 
   getAllNews(): void {
-    this.newsService.getAllNews().subscribe({
+    this.newsService.getAll().subscribe({
       next: (data) => {
         this.newsList = data;
       },

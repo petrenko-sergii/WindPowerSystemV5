@@ -15,6 +15,7 @@ import { HealthCheckComponent } from './health-check/health-check.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CitiesComponent } from './cities/cities.component';
 import { CountriesComponent } from './countries/countries.component';
+import { NewsComponent } from './news/news.component';
 import { NewsListComponent } from './news/news-list.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
 import { TurbinesComponent } from './turbines/turbines.component';
@@ -36,6 +37,7 @@ import { GraphQLModule } from './graphql.module';
     HealthCheckComponent,
     CitiesComponent,
     CountriesComponent,
+    NewsComponent,
     NewsListComponent,
     TurbineTypesComponent,
     TurbinesComponent,
