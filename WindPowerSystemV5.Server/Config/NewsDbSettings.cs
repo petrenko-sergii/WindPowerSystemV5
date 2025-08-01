@@ -1,4 +1,4 @@
-﻿namespace WindPowerSystemV5.Server.Data.MongoDbModels;
+﻿namespace WindPowerSystemV5.Server.Config;
 
 public class NewsDbSettings
 {

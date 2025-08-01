@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using WindPowerSystemV5.Server.Config;
 using WindPowerSystemV5.Server.Data.MongoDbModels;
 using WindPowerSystemV5.Server.Services.Interfaces;
 using WindPowerSystemV5.Server.Utils.Exceptions;

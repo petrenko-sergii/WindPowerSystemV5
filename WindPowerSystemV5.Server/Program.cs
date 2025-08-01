@@ -7,7 +7,6 @@ using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
 using Microsoft.AspNetCore.Identity;
 using WindPowerSystemV5.Server.Data.Models;
-using WindPowerSystemV5.Server.Data.MongoDbModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WindPowerSystemV5.Server.Data.GraphQL;
