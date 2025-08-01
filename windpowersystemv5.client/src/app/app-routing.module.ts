@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'country/:id', component: CountryEditComponent, canActivate: [AuthGuard] },
   { path: 'country', component: CountryEditComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
-  { path: 'news-list', component: NewsListComponent },
+  { path: 'news', component: NewsListComponent },
   { path: 'news/:id', component: NewsComponent },
   { path: 'turbine-types', component: TurbineTypesComponent },
   { path: 'turbine-type/:id', component: TurbineTypeEditComponent, canActivate: [AuthGuard] },

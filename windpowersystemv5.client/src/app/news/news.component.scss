@@ -1,0 +1,41 @@
+.news-title {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.news-chapters-box {
+  margin: 22px auto 0 auto;
+  width: 80%;
+}
+
+.news-meta-date {
+  color: #757575;
+}
+
+.news-chapters-box .chapter {
+  margin-top: 12px;
+  text-align:left;
+}
+
+.news-meta-row {
+  width: 80%;
+  margin: 12px auto 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.news-comments {
+  width: 80%;
+  margin: 22px auto 0 auto;
+  margin-top:40px;
+  text-align:left;
+}
+
+.news-comments .comment {
+  margin: 18px 0 0 24px;
+}
+
+.news-comments .comment-date {
+  font-size: 0.85em;
+  color: #757575;
+}

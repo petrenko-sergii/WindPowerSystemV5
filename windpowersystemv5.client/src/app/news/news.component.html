@@ -1,1 +1,26 @@
-<p>News with all chapters!</p>
+<div class="news-page-container" *ngIf="news">
+  <h2 class="news-title">
+    {{ news.title }}
+  </h2>
+
+  <div class="news-meta-row">
+    <span>
+      {{ news.author }}, &nbsp;&nbsp;
+      <span class="news-meta-date">{{ news.createdDt | date:'MMM dd, yyyy, hh:mm a' }}</span>
+    </span>
+  </div>
+
+  <div class="news-chapters-box">
+    <div *ngFor="let chapter of news.chapters" class="chapter">
+      <div>{{ chapter }}</div>
+    </div>
+  </div>
+
+  <div class="news-comments">
+    <strong>Comments</strong>
+    <div *ngFor="let comment of news.comments" class="comment">
+      <div>{{ comment.comment }}</div>
+      <div class="comment-date">{{ comment.createdDt | date:'MMM dd, yyyy, hh:mm a' }}</div>
+    </div>
+  </div>
+</div>
