@@ -17,8 +17,8 @@ describe('TurbineTypesComponent', () => {
     let turbineTypeServiceSpy = jasmine.createSpyObj<TurbineTypeService>('TurbineTypeService', ['getData']);
     turbineTypeServiceSpy.getData.and.returnValue(
       of<TurbineType[]>([
-        { id: 1, manufacturer: 'TestMan1', model: 'TestModel1', capacity: 1.5, turbineQty: 2 },
-        { id: 2, manufacturer: 'TestMan2', model: 'TestModel2', capacity: 2.0, turbineQty: 3 }
+        { id: 1, manufacturer: 'TestMan1', model: 'TestModel1', capacity: 1.5, fileName: 'test1.jpg', turbineQty: 2 },
+        { id: 2, manufacturer: 'TestMan2', model: 'TestModel2', capacity: 2.0, fileName: 'test2.jpg', turbineQty: 3 }
       ])
     );
 

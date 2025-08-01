@@ -10,6 +10,7 @@ import { CityEditComponent } from './cities/city-edit.component';
 import { CountriesComponent } from './countries/countries.component';
 import { CountryEditComponent } from './countries/country-edit.component';
 import { LoginComponent } from './auth/login.component';
+import { NewsComponent } from './news/news.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
 import { TurbineTypeEditComponent } from './turbine-types/turbine-type-edit.component';
 import { TurbinesComponent } from './turbines/turbines.component';
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'country/:id', component: CountryEditComponent, canActivate: [AuthGuard] },
   { path: 'country', component: CountryEditComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
+  { path: 'news', component: NewsComponent },
   { path: 'turbine-types', component: TurbineTypesComponent },
   { path: 'turbine-type/:id', component: TurbineTypeEditComponent, canActivate: [AuthGuard] },
   { path: 'turbine-type', component: TurbineTypeEditComponent, canActivate: [AuthGuard] },
