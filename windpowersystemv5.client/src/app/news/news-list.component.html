@@ -19,7 +19,9 @@
       <div class="carousel-slides" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'">
         <div class="carousel-slide" *ngFor="let news of newsWithImages; let i = index">
           <div class="slide-content">
-            <img [src]="news.imageUrl" [alt]="news.title" class="news-image" />
+            <img [src]="news.imageUrl" 
+                 [alt]="news.title" 
+                 class="news-image" />
             <div class="slide-overlay">
               <h3>{{ news.title }}</h3>
               <p>By {{ news.author }}</p>
