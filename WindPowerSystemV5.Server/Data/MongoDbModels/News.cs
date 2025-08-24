@@ -22,4 +22,6 @@ public class News
     public List<NewsComment> Comments { get; set; } = [];
 
     public int Likes { get; set; }
+
+    public string? ImageUrl { get; set; } // Optional image URL for news
 }

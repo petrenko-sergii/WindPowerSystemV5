@@ -9,4 +9,5 @@ export interface News {
   updatedDt?: string; 
   comments: NewsComment[];
   likes: number;
+  imageUrl?: string; // Optional image URL for news
 }

@@ -9,3 +9,52 @@
     </mat-list-item>
   </mat-list>
 </div>
+
+<!-- News Carousel/Slideshow -->
+<div class="news-carousel-container" *ngIf="newsWithImages.length > 0">
+  <h2>Featured News Images</h2>
+  
+  <div class="carousel">
+    <div class="carousel-wrapper">
+      <div class="carousel-slides" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'">
+        <div class="carousel-slide" *ngFor="let news of newsWithImages; let i = index">
+          <div class="slide-content">
+            <img [src]="news.imageUrl" [alt]="news.title" class="news-image" />
+            <div class="slide-overlay">
+              <h3>{{ news.title }}</h3>
+              <p>By {{ news.author }}</p>
+              <a mat-flat-button color="primary" [routerLink]="['/news', news.id]">
+                Read More
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation Arrows -->
+      <button mat-icon-button class="carousel-nav carousel-nav-prev" 
+              (click)="previousSlide(); onSlideClick()" 
+              *ngIf="newsWithImages.length > 1"
+              aria-label="Previous slide">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      
+      <button mat-icon-button class="carousel-nav carousel-nav-next" 
+              (click)="nextSlide(); onSlideClick()" 
+              *ngIf="newsWithImages.length > 1"
+              aria-label="Next slide">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+    
+    <!-- Slide Indicators -->
+    <div class="carousel-indicators" *ngIf="newsWithImages.length > 1">
+      <button *ngFor="let news of newsWithImages; let i = index" 
+              class="indicator" 
+              [class.active]="i === currentSlideIndex"
+              (click)="goToSlide(i); onSlideClick()"
+              [attr.aria-label]="'Go to slide ' + (i + 1)">
+      </button>
+    </div>
+  </div>
+</div>

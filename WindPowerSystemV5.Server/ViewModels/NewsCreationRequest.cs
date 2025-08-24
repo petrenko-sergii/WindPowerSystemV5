@@ -11,4 +11,6 @@ public class NewsCreationRequest
     public string Author { get; set; } = null!;
 
     public List<string> Chapters { get; set; } = [];
+
+    public string? ImageUrl { get; set; } // Optional image URL for news
 }
