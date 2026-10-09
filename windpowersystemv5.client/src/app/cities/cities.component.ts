@@ -2,12 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { City } from './city';
 import { CityService } from './city.service';
+import { WeatherDialogComponent } from './weather-dialog.component';
 
 @Component({
   selector: 'app-cities',
@@ -16,7 +18,7 @@ import { CityService } from './city.service';
 })
 
 export class CitiesComponent implements OnInit {
-  public displayedColumns: string[] = ['id', 'name', 'lat', 'lon', 'countryName'];
+  public displayedColumns: string[] = ['id', 'name', 'lat', 'lon', 'countryName', 'weather'];
   public cities!: MatTableDataSource<City>;
 
   defaultPageIndex: number = 0;
@@ -34,7 +36,8 @@ export class CitiesComponent implements OnInit {
 
   constructor(
     private cityService: CityService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -95,6 +98,10 @@ export class CitiesComponent implements OnInit {
         },
         error: (error) => console.error(error)
       });
+  }
+
+  openWeatherDialog(city: City) {
+    this.dialog.open(WeatherDialogComponent, { data: city });
   }
 
   get isAuthenticated(): boolean {

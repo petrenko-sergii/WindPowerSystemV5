@@ -14,6 +14,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HealthCheckComponent } from './health-check/health-check.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CitiesComponent } from './cities/cities.component';
+import { WeatherDialogComponent } from './cities/weather-dialog.component';
 import { CountriesComponent } from './countries/countries.component';
 import { NewsComponent } from './news/news.component';
 import { NewsListComponent } from './news/news-list.component';
@@ -36,6 +37,7 @@ import { GraphQLModule } from './graphql.module';
     NavMenuComponent,
     HealthCheckComponent,
     CitiesComponent,
+    WeatherDialogComponent,
     CountriesComponent,
     NewsComponent,
     NewsListComponent,
