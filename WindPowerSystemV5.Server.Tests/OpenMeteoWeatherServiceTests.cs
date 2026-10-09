@@ -7,7 +7,7 @@ namespace WindPowerSystemV5.Server.Tests;
 public class OpenMeteoWeatherServiceTests
 {
     private const string GeoJson =
-        """{"results":[{"name":"Kyiv","latitude":50.45,"longitude":30.52,"country":"Ukraine"}]}""";
+        """{"results":[{"name":"Copenhagen","latitude":55.68,"longitude":12.57,"country":"Denmark"}]}""";
 
     private const string ForecastJson =
         """{"current":{"temperature_2m":12.5,"apparent_temperature":10.1,"relative_humidity_2m":70,"precipitation":0.4,"weather_code":61,"wind_speed_10m":15.2}}""";
@@ -20,15 +20,15 @@ public class OpenMeteoWeatherServiceTests
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
         // Act
-        var result = await service.GetCurrentWeather("Kyiv");
+        var result = await service.GetCurrentWeather("Copenhagen");
 
         // Assert
         Assert.Equal(2, handler.RequestedUrls.Count);
-        Assert.Contains("name=Kyiv", handler.RequestedUrls[0]);
-        Assert.Equal("Kyiv", result.City);
-        Assert.Equal("Ukraine", result.Country);
-        Assert.Equal(50.45m, result.Latitude);
-        Assert.Equal(30.52m, result.Longitude);
+        Assert.Contains("name=Copenhagen", handler.RequestedUrls[0]);
+        Assert.Equal("Copenhagen", result.City);
+        Assert.Equal("Denmark", result.Country);
+        Assert.Equal(55.68m, result.Latitude);
+        Assert.Equal(12.57m, result.Longitude);
         Assert.Equal(12.5m, result.TemperatureC);
         Assert.Equal(10.1m, result.FeelsLikeC);
         Assert.Equal(70, result.HumidityPercent);
@@ -85,7 +85,7 @@ public class OpenMeteoWeatherServiceTests
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
         // Act & Assert
-        await Assert.ThrowsAsync<HttpRequestException>(() => service.GetCurrentWeather("Kyiv", 1, 1));
+        await Assert.ThrowsAsync<HttpRequestException>(() => service.GetCurrentWeather("Copenhagen", 1, 1));
     }
 
     [Theory]

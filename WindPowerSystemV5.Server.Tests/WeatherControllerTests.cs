@@ -15,19 +15,19 @@ public class WeatherControllerTests
         var advisor = Substitute.For<IWeatherAdvisorService>();
         var expected = new WeatherClothingDTO
         {
-            Weather = new CurrentWeatherDTO { City = "Kyiv", Conditions = "Rain" },
+            Weather = new CurrentWeatherDTO { City = "Copenhagen", Conditions = "Rain" },
             Advice = new ClothingAdviceDTO { Summary = "Take a coat", UmbrellaNeeded = true }
         };
         using var cts = new CancellationTokenSource();
-        advisor.GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token).Returns(expected);
+        advisor.GetClothingAdvice("Copenhagen", 55.68m, 12.57m, cts.Token).Returns(expected);
         var controller = new WeatherController(advisor);
 
         // Act
-        var result = await controller.GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token);
+        var result = await controller.GetClothingAdvice("Copenhagen", 55.68m, 12.57m, cts.Token);
 
         // Assert
         Assert.Same(expected, result.Value);
-        await advisor.Received(1).GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token);
+        await advisor.Received(1).GetClothingAdvice("Copenhagen", 55.68m, 12.57m, cts.Token);
     }
 
     [Fact]
