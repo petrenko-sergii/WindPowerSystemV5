@@ -9,5 +9,5 @@ public class AnthropicOptions
     /// </summary>
     public string? ApiKey { get; set; }
 
-    public string Model { get; set; } = "claude-sonnet-5-5";
+    public string Model { get; set; } = null!;
 }
