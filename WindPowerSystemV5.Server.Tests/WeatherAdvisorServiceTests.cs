@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Anthropic;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using WindPowerSystemV5.Server.Config;
@@ -34,7 +35,7 @@ public class WeatherAdvisorServiceTests
             HttpClient = new HttpClient(handler)
         };
         var options = Options.Create(new AnthropicOptions { Model = "test-model" });
-        return new WeatherAdvisorService(client, options, _weatherLookup);
+        return new WeatherAdvisorService(client, options, _weatherLookup, NullLogger<WeatherAdvisorService>.Instance);
     }
 
     private static string MessageJson(string stopReason, string contentJson) =>

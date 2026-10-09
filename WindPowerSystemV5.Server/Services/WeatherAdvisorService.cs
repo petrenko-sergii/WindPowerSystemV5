@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Anthropic;
 using Anthropic.Models.Messages;
@@ -27,15 +28,18 @@ public class WeatherAdvisorService : IWeatherAdvisorService
     private readonly AnthropicClient _client;
     private readonly AnthropicOptions _options;
     private readonly IWeatherLookupService _weatherLookup;
+    private readonly ILogger<WeatherAdvisorService> _logger;
 
     public WeatherAdvisorService(
         AnthropicClient client,
         IOptions<AnthropicOptions> options,
-        IWeatherLookupService weatherLookup)
+        IWeatherLookupService weatherLookup,
+        ILogger<WeatherAdvisorService> logger)
     {
         _client = client;
         _options = options.Value;
         _weatherLookup = weatherLookup;
+        _logger = logger;
     }
 
     public async Task<WeatherClothingDTO> GetClothingAdvice(
@@ -60,6 +64,7 @@ public class WeatherAdvisorService : IWeatherAdvisorService
         // The agent loop: send messages, run any requested tools, repeat until Claude stops asking for tools.
         for (var i = 0; i < MaxAgentIterations; i++)
         {
+            var stopwatch = Stopwatch.StartNew();
             var response = await _client.Messages.Create(new MessageCreateParams
             {
                 Model = _options.Model,
@@ -72,6 +77,12 @@ public class WeatherAdvisorService : IWeatherAdvisorService
                 },
                 Messages = messages
             }, cancellationToken);
+            stopwatch.Stop();
+
+            _logger.LogInformation(
+                "Claude request {Step}/{MaxSteps} ({Model}): {InputTokens} input tokens, {OutputTokens} output tokens, {LatencyMs} ms",
+                i + 1, MaxAgentIterations, _options.Model,
+                response.Usage.InputTokens, response.Usage.OutputTokens, stopwatch.ElapsedMilliseconds);
 
             if (response.StopReason == "refusal")
             {
