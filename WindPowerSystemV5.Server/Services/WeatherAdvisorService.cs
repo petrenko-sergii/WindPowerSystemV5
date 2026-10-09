@@ -68,7 +68,6 @@ public class WeatherAdvisorService : IWeatherAdvisorService
                 Tools = [BuildWeatherTool()],
                 OutputConfig = new OutputConfig
                 {
-                    Effort = Effort.Low,
                     Format = BuildAdviceFormat()
                 },
                 Messages = messages
