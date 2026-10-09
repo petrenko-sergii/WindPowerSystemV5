@@ -1,6 +1,30 @@
 <h2 mat-dialog-title>Weather in {{city.name}}</h2>
 <mat-dialog-content>
-  <!-- Weather content will be added here -->
+  <p *ngIf="!result && !errorMessage"><em>Loading...</em></p>
+  <p *ngIf="errorMessage">{{errorMessage}}</p>
+
+  <ng-container *ngIf="result">
+    <div class="weather-headline">
+      {{result.weather.conditions}}, {{formatTemperature(result.weather.temperatureC)}}
+    </div>
+    <div class="weather-details">
+      Feels like {{formatTemperature(result.weather.feelsLikeC)}} ·
+      Wind {{result.weather.windSpeedKmh}} km/h ·
+      Humidity {{result.weather.humidityPercent}}% ·
+      Precipitation {{result.weather.precipitationMm}} mm
+    </div>
+
+    <h3>What to wear</h3>
+    <p>{{result.advice.summary}}</p>
+    <ul>
+      <li *ngFor="let item of result.advice.items">
+        <span class="advice-category">{{item.category}}:</span> {{item.item}}
+        <span class="advice-reason">– {{item.reason}}</span>
+      </li>
+    </ul>
+    <p *ngIf="result.advice.umbrellaNeeded">☂ Take an umbrella.</p>
+    <p *ngIf="result.advice.sunProtectionNeeded">☀ Use sun protection.</p>
+  </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>
