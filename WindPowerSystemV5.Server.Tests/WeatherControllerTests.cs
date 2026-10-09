@@ -1,0 +1,37 @@
+using Microsoft.AspNetCore.Authorization;
+using NSubstitute;
+using WindPowerSystemV5.Server.Controllers;
+using WindPowerSystemV5.Server.Data.DTOs;
+using WindPowerSystemV5.Server.Services.Interfaces;
+
+namespace WindPowerSystemV5.Server.Tests;
+
+public class WeatherControllerTests
+{
+    [Fact]
+    public async Task GetClothingAdvice_PassesArgumentsToServiceAndReturnsResult()
+    {
+        var advisor = Substitute.For<IWeatherAdvisorService>();
+        var expected = new WeatherClothingDTO
+        {
+            Weather = new CurrentWeatherDTO { City = "Kyiv", Conditions = "Rain" },
+            Advice = new ClothingAdviceDTO { Summary = "Take a coat", UmbrellaNeeded = true }
+        };
+        using var cts = new CancellationTokenSource();
+        advisor.GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token).Returns(expected);
+        var controller = new WeatherController(advisor);
+
+        var result = await controller.GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token);
+
+        Assert.Same(expected, result.Value);
+        await advisor.Received(1).GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token);
+    }
+
+    [Fact]
+    public void GetClothingAdvice_RequiresAuthorization()
+    {
+        var method = typeof(WeatherController).GetMethod(nameof(WeatherController.GetClothingAdvice))!;
+
+        Assert.NotEmpty(method.GetCustomAttributes(typeof(AuthorizeAttribute), true));
+    }
+}
