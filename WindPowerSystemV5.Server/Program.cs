@@ -15,7 +15,9 @@ using Microsoft.AspNetCore.HttpOverrides;
 using WindPowerSystemV5.Server.Config;
 using WindPowerSystemV5.Server.Mappings;
 using Microsoft.AspNetCore.Diagnostics;
+using Anthropic;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using WindPowerSystemV5.Server.Utils.Exceptions;
 using WindPowerSystemV5.Server.Services;
 using WindPowerSystemV5.Server.Services.Interfaces;
@@ -52,6 +54,19 @@ builder.Services.AddControllers()
 
 builder.Services.AddOptions<BlobStorageOptions>()
     .BindConfiguration("AzureBlobStorage");
+
+builder.Services.AddOptions<AnthropicOptions>()
+    .BindConfiguration("Anthropic");
+
+builder.Services.AddSingleton(sp =>
+{
+    var apiKey = sp.GetRequiredService<IOptions<AnthropicOptions>>().Value.ApiKey;
+
+    // Without an explicit key the SDK falls back to the ANTHROPIC_API_KEY environment variable.
+    return string.IsNullOrWhiteSpace(apiKey) || apiKey == AnthropicOptions.Placeholder
+        ? new AnthropicClient()
+        : new AnthropicClient { ApiKey = apiKey };
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -90,7 +105,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
     /*Identity API endpoints, a new set of auth-related endpoints introduced
     with.NET 8 that can be used by SPAs to obtain the access tokens required to grant authentication
-    and authorization rights—a feature that looks promising but still too lacking to be used in production.
+    and authorization rightsï¿½a feature that looks promising but still too lacking to be used in production.
     Currently, the Identity API endpoints are not fully functional and are not recommended for production use.*/
     //.AddApiEndpoints()
     .AddEntityFrameworkStores<ApplicationDbContext>();

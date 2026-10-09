@@ -8,10 +8,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   imports: [
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
@@ -23,6 +25,7 @@ import { MatListModule } from '@angular/material/list';
   ],
   exports: [
     MatButtonModule,
+    MatDialogModule,
     MatIconModule,
     MatInputModule,
     MatListModule,

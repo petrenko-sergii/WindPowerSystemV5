@@ -5,4 +5,5 @@ export interface City {
   lon: number;
   countryId: number;
   countryName: string;
+  weather?: string;
 }
