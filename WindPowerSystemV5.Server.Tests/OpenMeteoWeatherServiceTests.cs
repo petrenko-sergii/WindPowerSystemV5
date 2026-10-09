@@ -15,11 +15,14 @@ public class OpenMeteoWeatherServiceTests
     [Fact]
     public async Task GetCurrentWeather_WithoutCoordinates_GeocodesThenReturnsWeather()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue(GeoJson).Enqueue(ForecastJson);
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
+        // Act
         var result = await service.GetCurrentWeather("Kyiv");
 
+        // Assert
         Assert.Equal(2, handler.RequestedUrls.Count);
         Assert.Contains("name=Kyiv", handler.RequestedUrls[0]);
         Assert.Equal("Kyiv", result.City);
@@ -37,11 +40,14 @@ public class OpenMeteoWeatherServiceTests
     [Fact]
     public async Task GetCurrentWeather_WithCoordinates_SkipsGeocoding()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue(ForecastJson);
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
+        // Act
         var result = await service.GetCurrentWeather("Lviv", 49.84m, 24.03m);
 
+        // Assert
         Assert.Single(handler.RequestedUrls);
         Assert.Contains("latitude=49.84&longitude=24.03", handler.RequestedUrls[0]);
         Assert.Equal("Lviv", result.City);
@@ -52,27 +58,33 @@ public class OpenMeteoWeatherServiceTests
     [Fact]
     public async Task GetCurrentWeather_CityNotFound_ThrowsNotFoundException()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue("""{"results":[]}""");
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
+        // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => service.GetCurrentWeather("Nowhereville"));
     }
 
     [Fact]
     public async Task GetCurrentWeather_GeocodingResponseHasNoResultsProperty_ThrowsNotFoundException()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue("{}");
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
+        // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(() => service.GetCurrentWeather("Nowhereville"));
     }
 
     [Fact]
     public async Task GetCurrentWeather_UpstreamError_ThrowsHttpRequestException()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue("{}", HttpStatusCode.InternalServerError);
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
+        // Act & Assert
         await Assert.ThrowsAsync<HttpRequestException>(() => service.GetCurrentWeather("Kyiv", 1, 1));
     }
 
@@ -90,12 +102,15 @@ public class OpenMeteoWeatherServiceTests
     [InlineData(1234, "Unknown")]
     public async Task GetCurrentWeather_MapsWeatherCodeToDescription(int code, string expected)
     {
+        // Arrange
         var json = ForecastJson.Replace("\"weather_code\":61", $"\"weather_code\":{code}");
         var handler = new StubHttpMessageHandler().Enqueue(json);
         var service = new OpenMeteoWeatherService(new HttpClient(handler));
 
+        // Act
         var result = await service.GetCurrentWeather("X", 1, 1);
 
+        // Assert
         Assert.Equal(expected, result.Conditions);
     }
 }

@@ -55,16 +55,20 @@ public class WeatherAdvisorServiceTests
     [InlineData("   ")]
     public async Task GetClothingAdvice_BlankCity_ThrowsBadRequest(string city)
     {
+        // Arrange
         var service = CreateService(new StubHttpMessageHandler());
 
+        // Act & Assert
         await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice(city));
     }
 
     [Fact]
     public async Task GetClothingAdvice_OnlyOneCoordinate_ThrowsBadRequest()
     {
+        // Arrange
         var service = CreateService(new StubHttpMessageHandler());
 
+        // Act & Assert
         await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice("Kyiv", 50m, null));
         await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice("Kyiv", null, 30m));
     }
@@ -72,14 +76,17 @@ public class WeatherAdvisorServiceTests
     [Fact]
     public async Task GetClothingAdvice_ToolCallThenAdvice_ReturnsWeatherAndAdvice()
     {
+        // Arrange
         _weatherLookup.GetCurrentWeather("Kyiv", 50m, 30m, Arg.Any<CancellationToken>()).Returns(Weather);
         var handler = new StubHttpMessageHandler()
             .Enqueue(MessageJson("tool_use", ToolUse()))
             .Enqueue(MessageJson("end_turn", Text(AdviceJson)));
         var service = CreateService(handler);
 
+        // Act
         var result = await service.GetClothingAdvice("Kyiv", 50m, 30m);
 
+        // Assert
         Assert.Equal(2, handler.RequestedUrls.Count);
         Assert.Same(Weather, result.Weather);
         Assert.Equal("Dress warmly", result.Advice.Summary);
@@ -94,18 +101,22 @@ public class WeatherAdvisorServiceTests
     [Fact]
     public async Task GetClothingAdvice_Refusal_ThrowsBadRequest()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue(MessageJson("refusal", Text("No")));
         var service = CreateService(handler);
 
+        // Act & Assert
         await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice("Kyiv"));
     }
 
     [Fact]
     public async Task GetClothingAdvice_AdviceWithoutWeatherLookup_ThrowsInvalidOperation()
     {
+        // Arrange
         var handler = new StubHttpMessageHandler().Enqueue(MessageJson("end_turn", Text(AdviceJson)));
         var service = CreateService(handler);
 
+        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetClothingAdvice("Kyiv"));
         await _weatherLookup.DidNotReceiveWithAnyArgs().GetCurrentWeather(default!, default, default, default);
     }
@@ -113,12 +124,14 @@ public class WeatherAdvisorServiceTests
     [Fact]
     public async Task GetClothingAdvice_UnknownTool_DoesNotLookUpWeather()
     {
+        // Arrange
         // The unknown tool gets an error result; the agent then answers without any weather data.
         var handler = new StubHttpMessageHandler()
             .Enqueue(MessageJson("tool_use", ToolUse(name: "other_tool")))
             .Enqueue(MessageJson("end_turn", Text(AdviceJson)));
         var service = CreateService(handler);
 
+        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetClothingAdvice("Kyiv"));
         Assert.Equal(2, handler.RequestedUrls.Count);
         await _weatherLookup.DidNotReceiveWithAnyArgs().GetCurrentWeather(default!, default, default, default);
@@ -127,6 +140,7 @@ public class WeatherAdvisorServiceTests
     [Fact]
     public async Task GetClothingAdvice_AgentNeverStopsCallingTools_ThrowsAfterMaxIterations()
     {
+        // Arrange
         _weatherLookup.GetCurrentWeather(Arg.Any<string>(), null, null, Arg.Any<CancellationToken>()).Returns(Weather);
         var handler = new StubHttpMessageHandler();
         for (var i = 0; i < 5; i++)
@@ -135,6 +149,7 @@ public class WeatherAdvisorServiceTests
         }
         var service = CreateService(handler);
 
+        // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetClothingAdvice("Kyiv"));
         Assert.Equal(5, handler.RequestedUrls.Count);
     }

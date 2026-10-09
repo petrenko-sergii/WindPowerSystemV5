@@ -8,7 +8,7 @@ Use semantic commit messages (source: https://gist.github.com/joshbuchea/6f47e86
 <type>: <subject>
 ```
 
-Do not use a scope. Write the subject in the present tense (imperative mood), e.g. `feat: add hat wobble`.
+Do not use a scope. Write the subject in the present tense (imperative mood) and start it with a capital letter, e.g. `feat: Add hat wobble`.
 
 ## Types
 
@@ -27,7 +27,8 @@ Do not use a scope. Write the subject in the present tense (imperative mood), e.
 ## Examples
 
 ```
-feat: add clothing advice to weather popup
-fix: handle missing coordinates in weather request
-chore: update CHANGELOG
+feat: Add weather-details popup
+fix: Handle missing coordinates in weather request
+refactor: Remove Effort for Haiku-model
+chore: Update CHANGELOG
 ```

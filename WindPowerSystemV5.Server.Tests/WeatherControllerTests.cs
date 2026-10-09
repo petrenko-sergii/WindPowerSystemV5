@@ -11,6 +11,7 @@ public class WeatherControllerTests
     [Fact]
     public async Task GetClothingAdvice_PassesArgumentsToServiceAndReturnsResult()
     {
+        // Arrange
         var advisor = Substitute.For<IWeatherAdvisorService>();
         var expected = new WeatherClothingDTO
         {
@@ -21,8 +22,10 @@ public class WeatherControllerTests
         advisor.GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token).Returns(expected);
         var controller = new WeatherController(advisor);
 
+        // Act
         var result = await controller.GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token);
 
+        // Assert
         Assert.Same(expected, result.Value);
         await advisor.Received(1).GetClothingAdvice("Kyiv", 50.45m, 30.52m, cts.Token);
     }
@@ -30,8 +33,13 @@ public class WeatherControllerTests
     [Fact]
     public void GetClothingAdvice_RequiresAuthorization()
     {
+        // Arrange
         var method = typeof(WeatherController).GetMethod(nameof(WeatherController.GetClothingAdvice))!;
 
-        Assert.NotEmpty(method.GetCustomAttributes(typeof(AuthorizeAttribute), true));
+        // Act
+        var attributes = method.GetCustomAttributes(typeof(AuthorizeAttribute), true);
+
+        // Assert
+        Assert.NotEmpty(attributes);
     }
 }
