@@ -12,7 +12,7 @@ public class WeatherControllerTests
     public async Task GetClothingAdvice_PassesArgumentsToServiceAndReturnsResult()
     {
         // Arrange
-        var advisor = Substitute.For<IWeatherAdvisorService>();
+        var advisor = Substitute.For<IWeatherAdvisorAgent>();
         var expected = new WeatherClothingDTO
         {
             Weather = new CurrentWeatherDTO { City = "Copenhagen", Conditions = "Rain" },

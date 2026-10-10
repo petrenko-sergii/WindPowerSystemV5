@@ -9,11 +9,11 @@ namespace WindPowerSystemV5.Server.Controllers;
 [ApiController]
 public class WeatherController : ControllerBase
 {
-    private readonly IWeatherAdvisorService _weatherAdvisorService;
+    private readonly IWeatherAdvisorAgent _weatherAdvisorAgent;
 
-    public WeatherController(IWeatherAdvisorService weatherAdvisorService)
+    public WeatherController(IWeatherAdvisorAgent weatherAdvisorAgent)
     {
-        _weatherAdvisorService = weatherAdvisorService;
+        _weatherAdvisorAgent = weatherAdvisorAgent;
     }
 
     // Each call spends Anthropic API tokens, so it is limited to authenticated users.
@@ -25,6 +25,6 @@ public class WeatherController : ControllerBase
         [FromQuery] decimal? lon,
         CancellationToken cancellationToken)
     {
-        return await _weatherAdvisorService.GetClothingAdvice(city, lat, lon, cancellationToken);
+        return await _weatherAdvisorAgent.GetClothingAdvice(city, lat, lon, cancellationToken);
     }
 }

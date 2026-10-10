@@ -13,7 +13,7 @@ namespace WindPowerSystemV5.Server.Services;
 /// <summary>
 /// Claude agent: calls the get_weather tool for the requested city and returns structured clothing advice.
 /// </summary>
-public class WeatherAdvisorService : IWeatherAdvisorService
+public class WeatherAdvisorAgent : IWeatherAdvisorAgent
 {
     private const string GetWeatherToolName = "get_weather";
     private const int MaxAgentIterations = 5;
@@ -35,13 +35,13 @@ public class WeatherAdvisorService : IWeatherAdvisorService
     private readonly AnthropicClient _client;
     private readonly AnthropicOptions _options;
     private readonly IWeatherLookupService _weatherLookup;
-    private readonly ILogger<WeatherAdvisorService> _logger;
+    private readonly ILogger<WeatherAdvisorAgent> _logger;
 
-    public WeatherAdvisorService(
+    public WeatherAdvisorAgent(
         AnthropicClient client,
         IOptions<AnthropicOptions> options,
         IWeatherLookupService weatherLookup,
-        ILogger<WeatherAdvisorService> logger)
+        ILogger<WeatherAdvisorAgent> logger)
     {
         _client = client;
         _options = options.Value;

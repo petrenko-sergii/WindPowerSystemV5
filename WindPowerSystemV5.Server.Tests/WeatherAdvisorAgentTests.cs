@@ -11,7 +11,7 @@ using WindPowerSystemV5.Server.Utils.Exceptions;
 
 namespace WindPowerSystemV5.Server.Tests;
 
-public class WeatherAdvisorServiceTests
+public class WeatherAdvisorAgentTests
 {
     private const string AdviceJson =
         """{"summary":"Dress warmly","items":[{"category":"outerwear","item":"Rain jacket","reason":"Rainy"}],"umbrellaNeeded":true,"sunProtectionNeeded":false}""";
@@ -25,7 +25,7 @@ public class WeatherAdvisorServiceTests
 
     private readonly IWeatherLookupService _weatherLookup = Substitute.For<IWeatherLookupService>();
 
-    private WeatherAdvisorService CreateService(StubHttpMessageHandler handler)
+    private WeatherAdvisorAgent CreateAgent(StubHttpMessageHandler handler)
     {
         var client = new AnthropicClient
         {
@@ -35,7 +35,7 @@ public class WeatherAdvisorServiceTests
             HttpClient = new HttpClient(handler)
         };
         var options = Options.Create(new AnthropicOptions { Model = "test-model" });
-        return new WeatherAdvisorService(client, options, _weatherLookup, NullLogger<WeatherAdvisorService>.Instance);
+        return new WeatherAdvisorAgent(client, options, _weatherLookup, NullLogger<WeatherAdvisorAgent>.Instance);
     }
 
     private static string MessageJson(string stopReason, string contentJson) =>
@@ -57,21 +57,21 @@ public class WeatherAdvisorServiceTests
     public async Task GetClothingAdvice_BlankCity_ThrowsBadRequest(string city)
     {
         // Arrange
-        var service = CreateService(new StubHttpMessageHandler());
+        var agent = CreateAgent(new StubHttpMessageHandler());
 
         // Act & Assert
-        await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice(city));
+        await Assert.ThrowsAsync<BadRequestException>(() => agent.GetClothingAdvice(city));
     }
 
     [Fact]
     public async Task GetClothingAdvice_OnlyOneCoordinate_ThrowsBadRequest()
     {
         // Arrange
-        var service = CreateService(new StubHttpMessageHandler());
+        var agent = CreateAgent(new StubHttpMessageHandler());
 
         // Act & Assert
-        await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice("Copenhagen", 55m, null));
-        await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice("Copenhagen", null, 12m));
+        await Assert.ThrowsAsync<BadRequestException>(() => agent.GetClothingAdvice("Copenhagen", 55m, null));
+        await Assert.ThrowsAsync<BadRequestException>(() => agent.GetClothingAdvice("Copenhagen", null, 12m));
     }
 
     [Fact]
@@ -82,10 +82,10 @@ public class WeatherAdvisorServiceTests
         var handler = new StubHttpMessageHandler()
             .Enqueue(MessageJson("tool_use", ToolUse()))
             .Enqueue(MessageJson("end_turn", Text(AdviceJson)));
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act
-        var result = await service.GetClothingAdvice("Copenhagen", 55m, 12m);
+        var result = await agent.GetClothingAdvice("Copenhagen", 55m, 12m);
 
         // Assert
         Assert.Equal(2, handler.RequestedUrls.Count);
@@ -104,10 +104,10 @@ public class WeatherAdvisorServiceTests
     {
         // Arrange
         var handler = new StubHttpMessageHandler().Enqueue(MessageJson("refusal", Text("No")));
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act & Assert
-        await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice("Copenhagen"));
+        await Assert.ThrowsAsync<BadRequestException>(() => agent.GetClothingAdvice("Copenhagen"));
     }
 
     [Fact]
@@ -115,10 +115,10 @@ public class WeatherAdvisorServiceTests
     {
         // Arrange
         var handler = new StubHttpMessageHandler().Enqueue(MessageJson("end_turn", Text(AdviceJson)));
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetClothingAdvice("Copenhagen"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => agent.GetClothingAdvice("Copenhagen"));
         await _weatherLookup.DidNotReceiveWithAnyArgs().GetCurrentWeather(default!, default, default, default);
     }
 
@@ -130,10 +130,10 @@ public class WeatherAdvisorServiceTests
         var handler = new StubHttpMessageHandler()
             .Enqueue(MessageJson("tool_use", ToolUse(name: "other_tool")))
             .Enqueue(MessageJson("end_turn", Text(AdviceJson)));
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetClothingAdvice("Copenhagen"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => agent.GetClothingAdvice("Copenhagen"));
         Assert.Equal(2, handler.RequestedUrls.Count);
         await _weatherLookup.DidNotReceiveWithAnyArgs().GetCurrentWeather(default!, default, default, default);
     }
@@ -148,10 +148,10 @@ public class WeatherAdvisorServiceTests
         {
             handler.Enqueue(MessageJson("tool_use", ToolUse()));
         }
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(() => service.GetClothingAdvice("Copenhagen"));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => agent.GetClothingAdvice("Copenhagen"));
         Assert.Equal(5, handler.RequestedUrls.Count);
     }
 
@@ -163,10 +163,10 @@ public class WeatherAdvisorServiceTests
     {
         // Arrange
         var handler = new StubHttpMessageHandler();
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act & Assert
-        await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice(city));
+        await Assert.ThrowsAsync<BadRequestException>(() => agent.GetClothingAdvice(city));
         Assert.Empty(handler.RequestedUrls);
     }
 
@@ -175,10 +175,10 @@ public class WeatherAdvisorServiceTests
     {
         // Arrange
         var handler = new StubHttpMessageHandler();
-        var service = CreateService(handler);
+        var agent = CreateAgent(handler);
 
         // Act & Assert
-        await Assert.ThrowsAsync<BadRequestException>(() => service.GetClothingAdvice(new string('a', 101)));
+        await Assert.ThrowsAsync<BadRequestException>(() => agent.GetClothingAdvice(new string('a', 101)));
         Assert.Empty(handler.RequestedUrls);
     }
 }
