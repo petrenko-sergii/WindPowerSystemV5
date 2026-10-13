@@ -118,7 +118,6 @@ public class AiChatBotAgentTests
         Assert.Equal("V39/600", turbineType.Model);
         Assert.Equal(600, turbineType.Capacity);
         Assert.Equal(2, turbineType.TurbineQty);
-        Assert.Equal("/turbine-type/1", turbineType.Url);
     }
 
     [Fact]
@@ -147,6 +146,96 @@ public class AiChatBotAgentTests
     }
 
     [Fact]
+    public async Task AskAboutTurbineTypes_ToolThrows_ReportsErrorToClaudeAndStillAnswers()
+    {
+        // Arrange
+        _turbineTypeService.Search(Arg.Any<TurbineTypeSearchCriteria>(), Arg.Any<CancellationToken>())
+            .Returns<List<TurbineTypeDTO>>(_ => throw new InvalidOperationException("database is down"));
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("tool_use", ToolUse()))
+            .Enqueue(MessageJson("end_turn", Text(AnswerJson("I could not read the data right now."))));
+        var agent = CreateAgent(handler);
+
+        // Act
+        var result = await agent.AskAboutTurbineTypes("Which Vestas types do we have?");
+
+        // Assert
+        Assert.Equal("I could not read the data right now.", result.Answer);
+        Assert.Equal(2, handler.RequestedUrls.Count);
+        Assert.Contains("\"is_error\":true", handler.RequestBodies[1]);
+        Assert.DoesNotContain("database is down", handler.RequestBodies[1]);
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_ToolCancelled_PropagatesCancellation()
+    {
+        // Arrange
+        _turbineTypeService.Search(Arg.Any<TurbineTypeSearchCriteria>(), Arg.Any<CancellationToken>())
+            .Returns<List<TurbineTypeDTO>>(_ => throw new OperationCanceledException());
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("tool_use", ToolUse()));
+        var agent = CreateAgent(handler);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<OperationCanceledException>(
+            () => agent.AskAboutTurbineTypes("Which Vestas types do we have?"));
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_CancellationToken_IsPassedToDataLayer()
+    {
+        // Arrange
+        using var cts = new CancellationTokenSource();
+        _turbineTypeService.Search(Arg.Any<TurbineTypeSearchCriteria>(), Arg.Any<CancellationToken>())
+            .Returns([Vestas]);
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("tool_use", ToolUse()))
+            .Enqueue(MessageJson("end_turn", Text(AnswerJson("Vestas V39/600.", 1))));
+        var agent = CreateAgent(handler);
+
+        // Act
+        await agent.AskAboutTurbineTypes("Which Vestas types do we have?", cts.Token);
+
+        // Assert
+        await _turbineTypeService.Received(1).Search(Arg.Any<TurbineTypeSearchCriteria>(), cts.Token);
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_ResultShorterThanLimit_DoesNotRunCountQuery()
+    {
+        // Arrange
+        _turbineTypeService.Search(Arg.Any<TurbineTypeSearchCriteria>()).Returns([Vestas]);
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("tool_use", ToolUse(inputJson: """{"manufacturer":"Vestas","limit":5}""")))
+            .Enqueue(MessageJson("end_turn", Text(AnswerJson("Vestas V39/600.", 1))));
+        var agent = CreateAgent(handler);
+
+        // Act
+        await agent.AskAboutTurbineTypes("Which Vestas types do we have?");
+
+        // Assert
+        await _turbineTypeService.DidNotReceiveWithAnyArgs().Count(default!);
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_ResultReachesLimit_RunsCountQuery()
+    {
+        // Arrange
+        _turbineTypeService.Search(Arg.Any<TurbineTypeSearchCriteria>()).Returns([Vestas]);
+        _turbineTypeService.Count(Arg.Any<TurbineTypeSearchCriteria>()).Returns(4);
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("tool_use", ToolUse(inputJson: """{"limit":1}""")))
+            .Enqueue(MessageJson("end_turn", Text(AnswerJson("One of several.", 1))));
+        var agent = CreateAgent(handler);
+
+        // Act
+        await agent.AskAboutTurbineTypes("Show me a turbine type");
+
+        // Assert
+        await _turbineTypeService.Received(1).Count(Arg.Any<TurbineTypeSearchCriteria>());
+    }
+
+    [Fact]
     public async Task AskAboutTurbineTypes_CountryQuestion_ListsManufacturersThenSearchesMatchingOnes()
     {
         // Arrange
@@ -172,7 +261,6 @@ public class AiChatBotAgentTests
         await _turbineTypeService.Received(1).GetManufacturers();
         var turbineType = Assert.Single(result.TurbineTypes);
         Assert.Equal("Vestas", turbineType.Manufacturer);
-        Assert.Equal("/turbine-type/1", turbineType.Url);
     }
 
     [Fact]
@@ -219,6 +307,47 @@ public class AiChatBotAgentTests
 
         // Act & Assert
         await Assert.ThrowsAsync<BadRequestException>(() => agent.AskAboutTurbineTypes("Vestas types?"));
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_MaxTokensStop_ThrowsClearErrorWithoutParsing()
+    {
+        // Arrange
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("max_tokens", Text("""{"answer":"Vestas V39""")));
+        var agent = CreateAgent(handler);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => agent.AskAboutTurbineTypes("Vestas types?"));
+        Assert.Contains("cut off", ex.Message);
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_MaxTokensStopInsideToolUse_DoesNotRunTool()
+    {
+        // Arrange
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("max_tokens", ToolUse(inputJson: "{}")));
+        var agent = CreateAgent(handler);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => agent.AskAboutTurbineTypes("Vestas types?"));
+        await _turbineTypeService.DidNotReceiveWithAnyArgs().Search(default!);
+    }
+
+    [Fact]
+    public async Task AskAboutTurbineTypes_InvalidJsonAnswer_ThrowsClearError()
+    {
+        // Arrange
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("end_turn", Text("this is not json")));
+        var agent = CreateAgent(handler);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => agent.AskAboutTurbineTypes("Vestas types?"));
+        Assert.Contains("not valid JSON", ex.Message);
     }
 
     [Fact]

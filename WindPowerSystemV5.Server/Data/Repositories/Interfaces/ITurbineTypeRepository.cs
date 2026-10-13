@@ -12,10 +12,10 @@ public interface ITurbineTypeRepository
 
     Task<TurbineType?> GetByFileName(string fileName);
 
-    Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria);
+    Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default);
 
     /// <summary>Number of turbine types matching the criteria filters (ignores sorting and limit).</summary>
-    Task<int> Count(TurbineTypeSearchCriteria criteria);
+    Task<int> Count(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default);
 
-    Task<List<ManufacturerSummaryDTO>> GetManufacturers();
+    Task<List<ManufacturerSummaryDTO>> GetManufacturers(CancellationToken cancellationToken = default);
 }

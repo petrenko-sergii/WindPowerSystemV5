@@ -25,20 +25,39 @@ public class TurbineTypeRepositoryTests
         return context;
     }
 
-    [Fact]
-    public async Task Search_ManufacturerContains_FiltersByManufacturer()
+    [Theory]
+    [InlineData("Vest")]
+    [InlineData("vestas")]
+    [InlineData("VEST")]
+    public async Task Search_ManufacturerContains_FiltersByManufacturerIgnoringCase(string manufacturer)
     {
         // Arrange
-        // Case-insensitivity comes from the SQL Server collation; the InMemory provider is case-sensitive.
         using var context = CreateSeededContext();
         var repository = new TurbineTypeRepository(context);
 
         // Act
-        var result = await repository.Search(new TurbineTypeSearchCriteria { Manufacturer = "Vest" });
+        var result = await repository.Search(new TurbineTypeSearchCriteria { Manufacturer = manufacturer });
 
         // Assert
         var turbineType = Assert.Single(result);
         Assert.Equal(1, turbineType.Id);
+    }
+
+    [Theory]
+    [InlineData("n43")]
+    [InlineData("N4")]
+    public async Task Search_ModelContains_FiltersByModelIgnoringCase(string model)
+    {
+        // Arrange
+        using var context = CreateSeededContext();
+        var repository = new TurbineTypeRepository(context);
+
+        // Act
+        var result = await repository.Search(new TurbineTypeSearchCriteria { Model = model });
+
+        // Assert
+        var turbineType = Assert.Single(result);
+        Assert.Equal(3, turbineType.Id);
     }
 
     [Fact]
@@ -77,6 +96,32 @@ public class TurbineTypeRepositoryTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Search_EqualSortValues_OrdersTiesByIdAndTakesFirstDeterministically(bool descending)
+    {
+        // Arrange
+        using var context = CreateSeededContext();
+        context.TurbineTypes.AddRange(
+            new TurbineType { Id = 5, Manufacturer = "Vestas", Model = "V47", Capacity = 900, FileName = "e.jpg" },
+            new TurbineType { Id = 6, Manufacturer = "Vestas", Model = "V52", Capacity = 900, FileName = "f.jpg" });
+        context.SaveChanges();
+        var repository = new TurbineTypeRepository(context);
+
+        // Act
+        var result = await repository.Search(new TurbineTypeSearchCriteria
+        {
+            MinCapacity = 900,
+            MaxCapacity = 900,
+            SortBy = TurbineTypeSearchCriteria.SortByCapacity,
+            SortDescending = descending
+        });
+
+        // Assert
+        Assert.Equal([4, 5, 6], result.Select(t => t.Id));
+    }
+
+    [Theory]
     [InlineData(0)]
     [InlineData(-5)]
     public async Task Search_LimitBelowOne_IsClampedToOne(int limit)
@@ -108,6 +153,20 @@ public class TurbineTypeRepositoryTests
         // Assert
         Assert.Equal(["Enercon", "Nordex", "Siemens Gamesa", "Vestas"], result.Select(m => m.Manufacturer));
         Assert.Equal(2, result.Single(m => m.Manufacturer == "Vestas").TurbineTypeCount);
+    }
+
+    [Fact]
+    public async Task Search_CancelledToken_ThrowsOperationCanceled()
+    {
+        // Arrange
+        using var context = CreateSeededContext();
+        var repository = new TurbineTypeRepository(context);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        // Act & Assert
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => repository.Search(new TurbineTypeSearchCriteria(), cts.Token));
     }
 
     [Fact]

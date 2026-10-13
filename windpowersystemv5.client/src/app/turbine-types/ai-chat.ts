@@ -4,7 +4,6 @@ export interface TurbineTypeLink {
   model: string;
   capacity: number;
   turbineQty: number;
-  url: string;
 }
 
 export interface AiChatAnswer {

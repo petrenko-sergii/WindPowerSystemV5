@@ -18,7 +18,4 @@ public class TurbineTypeLinkDTO
     public float Capacity { get; set; }
 
     public int TurbineQty { get; set; }
-
-    /// <summary>Relative SPA URL of the turbine type page, e.g. "/turbine-type/3".</summary>
-    public string Url { get; set; } = string.Empty;
 }

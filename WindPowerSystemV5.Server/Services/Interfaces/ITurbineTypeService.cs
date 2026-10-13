@@ -11,9 +11,9 @@ public interface ITurbineTypeService
 
     Task<string> NameInfoFile(string fileName);
 
-    Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria);
+    Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default);
 
-    Task<int> Count(TurbineTypeSearchCriteria criteria);
+    Task<int> Count(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default);
 
-    Task<List<ManufacturerSummaryDTO>> GetManufacturers();
+    Task<List<ManufacturerSummaryDTO>> GetManufacturers(CancellationToken cancellationToken = default);
 }

@@ -34,12 +34,12 @@ public class TurbineTypeRepository : ITurbineTypeRepository
             .SingleOrDefaultAsync(t => t.FileName == fileName);
     }
 
-    public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria)
+    public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default)
     {
         var projected = Filter(criteria);
 
         var descending = criteria.SortDescending;
-        projected = criteria.SortBy switch
+        var ordered = criteria.SortBy switch
         {
             TurbineTypeSearchCriteria.SortByCapacity => descending
                 ? projected.OrderByDescending(t => t.Capacity) : projected.OrderBy(t => t.Capacity),
@@ -52,17 +52,20 @@ public class TurbineTypeRepository : ITurbineTypeRepository
             _ => projected.OrderBy(t => t.Id)
         };
 
+        // Id as the last sort key keeps the order (and therefore Take(limit)) deterministic for equal values.
+        projected = ordered.ThenBy(t => t.Id);
+
         var limit = Math.Clamp(criteria.Limit, 1, TurbineTypeSearchCriteria.MaxLimit);
 
-        return await projected.Take(limit).ToListAsync();
+        return await projected.Take(limit).ToListAsync(cancellationToken);
     }
 
-    public async Task<int> Count(TurbineTypeSearchCriteria criteria)
+    public async Task<int> Count(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default)
     {
-        return await Filter(criteria).CountAsync();
+        return await Filter(criteria).CountAsync(cancellationToken);
     }
 
-    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers()
+    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers(CancellationToken cancellationToken = default)
     {
         return await _context.TurbineTypes
             .AsNoTracking()
@@ -77,18 +80,21 @@ public class TurbineTypeRepository : ITurbineTypeRepository
     }
 
     // Applies the criteria filters (not sorting/limit) and projects to the DTO.
+    // Text filters lower-case both sides so they are case-insensitive regardless of the DB collation.
     private IQueryable<TurbineTypeDTO> Filter(TurbineTypeSearchCriteria criteria)
     {
         var query = _context.TurbineTypes.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(criteria.Manufacturer))
         {
-            query = query.Where(t => t.Manufacturer.Contains(criteria.Manufacturer));
+            var manufacturer = criteria.Manufacturer.ToLower();
+            query = query.Where(t => t.Manufacturer.ToLower().Contains(manufacturer));
         }
 
         if (!string.IsNullOrWhiteSpace(criteria.Model))
         {
-            query = query.Where(t => t.Model.Contains(criteria.Model));
+            var model = criteria.Model.ToLower();
+            query = query.Where(t => t.Model.ToLower().Contains(model));
         }
 
         if (criteria.MinCapacity.HasValue)

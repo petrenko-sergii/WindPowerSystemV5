@@ -38,19 +38,19 @@ public class TurbineTypeService : ITurbineTypeService
         return turbineTypeDTO;
     }
 
-    public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria)
+    public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default)
     {
-        return await _turbineTypeRepository.Search(criteria);
+        return await _turbineTypeRepository.Search(criteria, cancellationToken);
     }
 
-    public async Task<int> Count(TurbineTypeSearchCriteria criteria)
+    public async Task<int> Count(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default)
     {
-        return await _turbineTypeRepository.Count(criteria);
+        return await _turbineTypeRepository.Count(criteria, cancellationToken);
     }
 
-    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers()
+    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers(CancellationToken cancellationToken = default)
     {
-        return await _turbineTypeRepository.GetManufacturers();
+        return await _turbineTypeRepository.GetManufacturers(cancellationToken);
     }
 
     public async Task<int> Create(

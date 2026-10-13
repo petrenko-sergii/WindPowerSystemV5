@@ -19,7 +19,7 @@ describe('AskAiDialogComponent', () => {
   const answer: AiChatAnswer = {
     answer: 'Vestas has one type.',
     turbineTypes: [
-      { id: 1, manufacturer: 'Vestas', model: 'V39/600', capacity: 600, turbineQty: 2, url: '/turbine-type/1' }
+      { id: 1, manufacturer: 'Vestas', model: 'V39/600', capacity: 600, turbineQty: 2 }
     ]
   };
 

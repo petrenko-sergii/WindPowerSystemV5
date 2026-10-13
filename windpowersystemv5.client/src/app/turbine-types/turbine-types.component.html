@@ -7,7 +7,7 @@
 </button>
 
 <button mat-flat-button color="primary"
-        class="btn-ask-ai" *ngIf="turbineTypes" (click)="openAskAiDialog()">
+        class="btn-ask-ai" *ngIf="turbineTypes && isAuthenticated" (click)="openAskAiDialog()">
   <mat-icon>auto_awesome</mat-icon>
   Ask AI
 </button>
