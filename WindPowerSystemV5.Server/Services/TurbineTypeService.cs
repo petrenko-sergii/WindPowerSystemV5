@@ -43,6 +43,16 @@ public class TurbineTypeService : ITurbineTypeService
         return await _turbineTypeRepository.Search(criteria);
     }
 
+    public async Task<int> Count(TurbineTypeSearchCriteria criteria)
+    {
+        return await _turbineTypeRepository.Count(criteria);
+    }
+
+    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers()
+    {
+        return await _turbineTypeRepository.GetManufacturers();
+    }
+
     public async Task<int> Create(
         TurbineTypeCreationRequest turbineTypeToCreate,
         IFormFile infoFile)

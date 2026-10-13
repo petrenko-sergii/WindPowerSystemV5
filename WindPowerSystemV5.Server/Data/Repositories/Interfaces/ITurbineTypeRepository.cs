@@ -13,4 +13,9 @@ public interface ITurbineTypeRepository
     Task<TurbineType?> GetByFileName(string fileName);
 
     Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria);
+
+    /// <summary>Number of turbine types matching the criteria filters (ignores sorting and limit).</summary>
+    Task<int> Count(TurbineTypeSearchCriteria criteria);
+
+    Task<List<ManufacturerSummaryDTO>> GetManufacturers();
 }

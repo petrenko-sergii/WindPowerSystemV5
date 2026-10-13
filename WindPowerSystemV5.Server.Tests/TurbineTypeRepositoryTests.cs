@@ -93,6 +93,41 @@ public class TurbineTypeRepositoryTests
     }
 
     [Fact]
+    public async Task GetManufacturers_ReturnsDistinctNamesOrderedWithTypeCount()
+    {
+        // Arrange
+        using var context = CreateSeededContext();
+        context.TurbineTypes.Add(
+            new TurbineType { Id = 5, Manufacturer = "Vestas", Model = "V90", Capacity = 3000, FileName = "e.jpg" });
+        context.SaveChanges();
+        var repository = new TurbineTypeRepository(context);
+
+        // Act
+        var result = await repository.GetManufacturers();
+
+        // Assert
+        Assert.Equal(["Enercon", "Nordex", "Siemens Gamesa", "Vestas"], result.Select(m => m.Manufacturer));
+        Assert.Equal(2, result.Single(m => m.Manufacturer == "Vestas").TurbineTypeCount);
+    }
+
+    [Fact]
+    public async Task Count_IgnoresLimit()
+    {
+        // Arrange
+        using var context = CreateSeededContext();
+        var repository = new TurbineTypeRepository(context);
+        var criteria = new TurbineTypeSearchCriteria { Limit = 1 };
+
+        // Act
+        var returned = await repository.Search(criteria);
+        var total = await repository.Count(criteria);
+
+        // Assert
+        Assert.Single(returned);
+        Assert.Equal(4, total);
+    }
+
+    [Fact]
     public async Task Search_MinTurbineQty_FiltersByInstalledTurbines()
     {
         // Arrange

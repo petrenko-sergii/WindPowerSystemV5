@@ -19,14 +19,23 @@ namespace WindPowerSystemV5.Server.Services;
 public class AiChatBotAgent : IAiChatBotAgent
 {
     private const string SearchToolName = "search_turbine_types";
+    private const string ListManufacturersToolName = "list_manufacturers";
     private const int MaxAgentIterations = 5;
     public const int MaxQuestionLength = 500;
 
     private const string SystemPrompt =
         "You are an assistant for a wind power system that manages turbine types (manufacturer, model, " +
         "capacity in kW, number of installed turbines). Answer only questions about turbine types. " +
-        "Always call the search_turbine_types tool to get facts; never invent turbine types, numbers or ids. " +
-        "Call the tool several times if you need to compare or combine results. " +
+        "Always use the tools to get facts; never invent turbine types, numbers or ids. " +
+        "Call the tools several times if you need to compare or combine results. " +
+        "The database has NO country, region or ownership data: only manufacturer, model, capacity and " +
+        "turbine count. For questions about country, region or origin (for example \"which types are " +
+        "produced in Denmark?\"): call list_manufacturers, decide each manufacturer's home (headquarters) " +
+        "country from your general knowledge, then call search_turbine_types for the matching manufacturers " +
+        "and use those ids. Never put a country or city name into the manufacturer or model filter. " +
+        "In that case say in the answer that the country comes from general knowledge, not from the " +
+        "database, and mention it when a manufacturer is ambiguous (e.g. headquartered in one country but " +
+        "owned in another). " +
         "In the final answer, write a short, direct answer and list in turbineTypeIds the ids of the turbine " +
         "types the answer is about (only ids returned by the tool; empty when none). " +
         "If the question is not about turbine types, politely say you can only help with turbine types and " +
@@ -87,9 +96,10 @@ public class AiChatBotAgent : IAiChatBotAgent
                 Model = _options.Model,
                 MaxTokens = 2048,
                 System = SystemPrompt,
-                Tools = [BuildSearchTool()],
+                Tools = [BuildSearchTool(), BuildListManufacturersTool()],
                 OutputConfig = new OutputConfig
                 {
+                    Effort = Effort.Medium,
                     Format = BuildAnswerFormat()
                 },
                 Messages = messages
@@ -138,36 +148,58 @@ public class AiChatBotAgent : IAiChatBotAgent
                         Input = toolUse.Input
                     });
 
-                    if (toolUse.Name != SearchToolName)
+                    switch (toolUse.Name)
                     {
-                        toolResults.Add(new ToolResultBlockParam
-                        {
-                            ToolUseID = toolUse.ID,
-                            Content = $"Unknown tool: {toolUse.Name}",
-                            IsError = true
-                        });
-                        continue;
-                    }
+                        case SearchToolName:
+                            var criteria = ParseCriteria(toolUse.Input);
+                            var rows = await _turbineTypeService.Search(criteria);
+                            var totalCount = await _turbineTypeService.Count(criteria);
+                            foreach (var row in rows)
+                            {
+                                foundTurbineTypes[row.Id] = row;
+                            }
 
-                    var criteria = ParseCriteria(toolUse.Input);
-                    var rows = await _turbineTypeService.Search(criteria);
-                    foreach (var row in rows)
-                    {
-                        foundTurbineTypes[row.Id] = row;
-                    }
+                            toolResults.Add(new ToolResultBlockParam
+                            {
+                                ToolUseID = toolUse.ID,
+                                Content = JsonSerializer.Serialize(new
+                                {
+                                    totalCount,
+                                    returned = rows.Count,
+                                    rows = rows.Select(r => new
+                                    {
+                                        id = r.Id,
+                                        manufacturer = r.Manufacturer,
+                                        model = r.Model,
+                                        capacity = r.Capacity,
+                                        turbineQty = r.TurbineQty
+                                    })
+                                })
+                            });
+                            break;
 
-                    toolResults.Add(new ToolResultBlockParam
-                    {
-                        ToolUseID = toolUse.ID,
-                        Content = JsonSerializer.Serialize(rows.Select(r => new
-                        {
-                            id = r.Id,
-                            manufacturer = r.Manufacturer,
-                            model = r.Model,
-                            capacity = r.Capacity,
-                            turbineQty = r.TurbineQty
-                        }))
-                    });
+                        case ListManufacturersToolName:
+                            var manufacturers = await _turbineTypeService.GetManufacturers();
+                            toolResults.Add(new ToolResultBlockParam
+                            {
+                                ToolUseID = toolUse.ID,
+                                Content = JsonSerializer.Serialize(manufacturers.Select(m => new
+                                {
+                                    manufacturer = m.Manufacturer,
+                                    turbineTypeCount = m.TurbineTypeCount
+                                }))
+                            });
+                            break;
+
+                        default:
+                            toolResults.Add(new ToolResultBlockParam
+                            {
+                                ToolUseID = toolUse.ID,
+                                Content = $"Unknown tool: {toolUse.Name}",
+                                IsError = true
+                            });
+                            break;
+                    }
                 }
             }
 
@@ -259,7 +291,10 @@ public class AiChatBotAgent : IAiChatBotAgent
         Name = SearchToolName,
         Description =
             "Search turbine types in the database. All arguments are optional filters; " +
-            "with no arguments it returns the first turbine types. Capacity is in kW.",
+            "with no arguments it returns the first turbine types. Capacity is in kW. " +
+            "The manufacturer and model filters match the stored names only (never countries or cities). " +
+            "The result has totalCount (all matches) and rows (at most the limit); " +
+            "if totalCount is larger than returned, narrow the filters or sort.",
         InputSchema = new()
         {
             Properties = new Dictionary<string, JsonElement>
@@ -292,6 +327,18 @@ public class AiChatBotAgent : IAiChatBotAgent
                     description = $"Maximum number of rows to return (1-{TurbineTypeSearchCriteria.MaxLimit})"
                 })
             }
+        }
+    };
+
+    private static Tool BuildListManufacturersTool() => new()
+    {
+        Name = ListManufacturersToolName,
+        Description =
+            "List the distinct manufacturer names stored in the database with the number of turbine types " +
+            "each has. Use it to answer questions about country or origin of turbine types.",
+        InputSchema = new()
+        {
+            Properties = new Dictionary<string, JsonElement>()
         }
     };
 

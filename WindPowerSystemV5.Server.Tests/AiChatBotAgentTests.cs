@@ -147,6 +147,35 @@ public class AiChatBotAgentTests
     }
 
     [Fact]
+    public async Task AskAboutTurbineTypes_CountryQuestion_ListsManufacturersThenSearchesMatchingOnes()
+    {
+        // Arrange
+        _turbineTypeService.GetManufacturers().Returns(
+        [
+            new ManufacturerSummaryDTO { Manufacturer = "Enercon", TurbineTypeCount = 1 },
+            new ManufacturerSummaryDTO { Manufacturer = "Vestas", TurbineTypeCount = 1 }
+        ]);
+        _turbineTypeService
+            .Search(Arg.Is<TurbineTypeSearchCriteria>(c => c.Manufacturer == "Vestas"))
+            .Returns([Vestas]);
+        var handler = new StubHttpMessageHandler()
+            .Enqueue(MessageJson("tool_use", ToolUse(name: "list_manufacturers", inputJson: "{}")))
+            .Enqueue(MessageJson("tool_use", ToolUse()))
+            .Enqueue(MessageJson("end_turn", Text(AnswerJson("Vestas is Danish (general knowledge).", 1))));
+        var agent = CreateAgent(handler);
+
+        // Act
+        var result = await agent.AskAboutTurbineTypes("Which turbine types are produced in Denmark?");
+
+        // Assert
+        Assert.Equal(3, handler.RequestedUrls.Count);
+        await _turbineTypeService.Received(1).GetManufacturers();
+        var turbineType = Assert.Single(result.TurbineTypes);
+        Assert.Equal("Vestas", turbineType.Manufacturer);
+        Assert.Equal("/turbine-type/1", turbineType.Url);
+    }
+
+    [Fact]
     public async Task AskAboutTurbineTypes_AnswerWithUnknownId_DropsUnknownId()
     {
         // Arrange

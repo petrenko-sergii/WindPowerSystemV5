@@ -12,4 +12,8 @@ public interface ITurbineTypeService
     Task<string> NameInfoFile(string fileName);
 
     Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria);
+
+    Task<int> Count(TurbineTypeSearchCriteria criteria);
+
+    Task<List<ManufacturerSummaryDTO>> GetManufacturers();
 }

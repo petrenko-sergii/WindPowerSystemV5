@@ -36,6 +36,49 @@ public class TurbineTypeRepository : ITurbineTypeRepository
 
     public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria)
     {
+        var projected = Filter(criteria);
+
+        var descending = criteria.SortDescending;
+        projected = criteria.SortBy switch
+        {
+            TurbineTypeSearchCriteria.SortByCapacity => descending
+                ? projected.OrderByDescending(t => t.Capacity) : projected.OrderBy(t => t.Capacity),
+            TurbineTypeSearchCriteria.SortByManufacturer => descending
+                ? projected.OrderByDescending(t => t.Manufacturer) : projected.OrderBy(t => t.Manufacturer),
+            TurbineTypeSearchCriteria.SortByModel => descending
+                ? projected.OrderByDescending(t => t.Model) : projected.OrderBy(t => t.Model),
+            TurbineTypeSearchCriteria.SortByTurbineQty => descending
+                ? projected.OrderByDescending(t => t.TurbineQty) : projected.OrderBy(t => t.TurbineQty),
+            _ => projected.OrderBy(t => t.Id)
+        };
+
+        var limit = Math.Clamp(criteria.Limit, 1, TurbineTypeSearchCriteria.MaxLimit);
+
+        return await projected.Take(limit).ToListAsync();
+    }
+
+    public async Task<int> Count(TurbineTypeSearchCriteria criteria)
+    {
+        return await Filter(criteria).CountAsync();
+    }
+
+    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers()
+    {
+        return await _context.TurbineTypes
+            .AsNoTracking()
+            .GroupBy(t => t.Manufacturer)
+            .Select(g => new ManufacturerSummaryDTO
+            {
+                Manufacturer = g.Key,
+                TurbineTypeCount = g.Count()
+            })
+            .OrderBy(m => m.Manufacturer)
+            .ToListAsync();
+    }
+
+    // Applies the criteria filters (not sorting/limit) and projects to the DTO.
+    private IQueryable<TurbineTypeDTO> Filter(TurbineTypeSearchCriteria criteria)
+    {
         var query = _context.TurbineTypes.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(criteria.Manufacturer))
@@ -73,22 +116,6 @@ public class TurbineTypeRepository : ITurbineTypeRepository
             projected = projected.Where(t => t.TurbineQty >= criteria.MinTurbineQty.Value);
         }
 
-        var descending = criteria.SortDescending;
-        projected = criteria.SortBy switch
-        {
-            TurbineTypeSearchCriteria.SortByCapacity => descending
-                ? projected.OrderByDescending(t => t.Capacity) : projected.OrderBy(t => t.Capacity),
-            TurbineTypeSearchCriteria.SortByManufacturer => descending
-                ? projected.OrderByDescending(t => t.Manufacturer) : projected.OrderBy(t => t.Manufacturer),
-            TurbineTypeSearchCriteria.SortByModel => descending
-                ? projected.OrderByDescending(t => t.Model) : projected.OrderBy(t => t.Model),
-            TurbineTypeSearchCriteria.SortByTurbineQty => descending
-                ? projected.OrderByDescending(t => t.TurbineQty) : projected.OrderBy(t => t.TurbineQty),
-            _ => projected.OrderBy(t => t.Id)
-        };
-
-        var limit = Math.Clamp(criteria.Limit, 1, TurbineTypeSearchCriteria.MaxLimit);
-
-        return await projected.Take(limit).ToListAsync();
+        return projected;
     }
 }
