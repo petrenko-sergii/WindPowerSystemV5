@@ -19,6 +19,7 @@ import { CountriesComponent } from './countries/countries.component';
 import { NewsComponent } from './news/news.component';
 import { NewsListComponent } from './news/news-list.component';
 import { TurbineTypesComponent } from './turbine-types/turbine-types.component';
+import { AskAiDialogComponent } from './turbine-types/ask-ai-dialog.component';
 import { TurbinesComponent } from './turbines/turbines.component';
 import { CityEditComponent } from './cities/city-edit.component';
 import { CountryEditComponent } from './countries/country-edit.component';
@@ -42,6 +43,7 @@ import { GraphQLModule } from './graphql.module';
     NewsComponent,
     NewsListComponent,
     TurbineTypesComponent,
+    AskAiDialogComponent,
     TurbinesComponent,
     CityEditComponent,
     CountryEditComponent,

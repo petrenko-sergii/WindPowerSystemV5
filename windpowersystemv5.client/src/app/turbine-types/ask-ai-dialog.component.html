@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>
+  <mat-icon class="title-icon">auto_awesome</mat-icon>
+  Ask AI
+</h2>
+<mat-dialog-content>
+  <div class="question-field">
+    <mat-form-field appearance="outline">
+      <mat-label>Your question</mat-label>
+      <textarea matInput
+                rows="3"
+                cdkFocusInitial
+                [maxlength]="maxLength"
+                [formControl]="question"
+                (keydown.control.enter)="ask()"
+                placeholder="e.g. Which turbine type has the highest capacity?"></textarea>
+      <mat-hint align="end">{{question.value?.length ?? 0}} / {{maxLength}}</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <p *ngIf="isLoading" class="status"><em>Thinking...</em></p>
+  <p *ngIf="errorMessage" class="status error">{{errorMessage}}</p>
+
+  <ng-container *ngIf="result">
+    <p class="answer">{{result.answer}}</p>
+
+    <ul class="turbine-type-list" *ngIf="result.turbineTypes.length">
+      <li *ngFor="let turbineType of result.turbineTypes">
+        <a [routerLink]="['/turbine-type', turbineType.id]" (click)="close()">
+          {{turbineType.manufacturer}} {{turbineType.model}}
+        </a>
+        <span class="turbine-type-details">
+          – {{turbineType.capacity}} kW · {{turbineType.turbineQty}} turbine(s)
+        </span>
+      </li>
+    </ul>
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-flat-button color="primary"
+          [disabled]="!canAsk"
+          (click)="ask()">
+    Ask
+  </button>
+</mat-dialog-actions>

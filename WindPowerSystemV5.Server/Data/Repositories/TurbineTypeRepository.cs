@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.Data.Models;
 using WindPowerSystemV5.Server.Data.Repositories.Interfaces;
+using WindPowerSystemV5.Server.ViewModels;
 
 namespace WindPowerSystemV5.Server.Data.Repositories;
 
@@ -30,5 +32,96 @@ public class TurbineTypeRepository : ITurbineTypeRepository
     {
         return  await _context.TurbineTypes
             .SingleOrDefaultAsync(t => t.FileName == fileName);
+    }
+
+    public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default)
+    {
+        var projected = Filter(criteria);
+
+        var descending = criteria.SortDescending;
+        var ordered = criteria.SortBy switch
+        {
+            TurbineTypeSearchCriteria.SortByCapacity => descending
+                ? projected.OrderByDescending(t => t.Capacity) : projected.OrderBy(t => t.Capacity),
+            TurbineTypeSearchCriteria.SortByManufacturer => descending
+                ? projected.OrderByDescending(t => t.Manufacturer) : projected.OrderBy(t => t.Manufacturer),
+            TurbineTypeSearchCriteria.SortByModel => descending
+                ? projected.OrderByDescending(t => t.Model) : projected.OrderBy(t => t.Model),
+            TurbineTypeSearchCriteria.SortByTurbineQty => descending
+                ? projected.OrderByDescending(t => t.TurbineQty) : projected.OrderBy(t => t.TurbineQty),
+            _ => projected.OrderBy(t => t.Id)
+        };
+
+        // Id as the last sort key keeps the order (and therefore Take(limit)) deterministic for equal values.
+        projected = ordered.ThenBy(t => t.Id);
+
+        var limit = Math.Clamp(criteria.Limit, 1, TurbineTypeSearchCriteria.MaxLimit);
+
+        return await projected.Take(limit).ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> Count(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default)
+    {
+        return await Filter(criteria).CountAsync(cancellationToken);
+    }
+
+    public async Task<List<ManufacturerSummaryDTO>> GetManufacturers(CancellationToken cancellationToken = default)
+    {
+        return await _context.TurbineTypes
+            .AsNoTracking()
+            .GroupBy(t => t.Manufacturer)
+            .Select(g => new ManufacturerSummaryDTO
+            {
+                Manufacturer = g.Key,
+                TurbineTypeCount = g.Count()
+            })
+            .OrderBy(m => m.Manufacturer)
+            .ToListAsync();
+    }
+
+    // Applies the criteria filters (not sorting/limit) and projects to the DTO.
+    // Text filters lower-case both sides so they are case-insensitive regardless of the DB collation.
+    private IQueryable<TurbineTypeDTO> Filter(TurbineTypeSearchCriteria criteria)
+    {
+        var query = _context.TurbineTypes.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(criteria.Manufacturer))
+        {
+            var manufacturer = criteria.Manufacturer.ToLower();
+            query = query.Where(t => t.Manufacturer.ToLower().Contains(manufacturer));
+        }
+
+        if (!string.IsNullOrWhiteSpace(criteria.Model))
+        {
+            var model = criteria.Model.ToLower();
+            query = query.Where(t => t.Model.ToLower().Contains(model));
+        }
+
+        if (criteria.MinCapacity.HasValue)
+        {
+            query = query.Where(t => t.Capacity >= criteria.MinCapacity.Value);
+        }
+
+        if (criteria.MaxCapacity.HasValue)
+        {
+            query = query.Where(t => t.Capacity <= criteria.MaxCapacity.Value);
+        }
+
+        var projected = query.Select(t => new TurbineTypeDTO
+        {
+            Id = t.Id,
+            Manufacturer = t.Manufacturer,
+            Model = t.Model,
+            Capacity = t.Capacity,
+            FileName = t.FileName,
+            TurbineQty = t.Turbines != null ? t.Turbines.Count : 0
+        });
+
+        if (criteria.MinTurbineQty.HasValue)
+        {
+            projected = projected.Where(t => t.TurbineQty >= criteria.MinTurbineQty.Value);
+        }
+
+        return projected;
     }
 }

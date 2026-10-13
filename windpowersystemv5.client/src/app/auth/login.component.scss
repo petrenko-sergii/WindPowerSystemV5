@@ -1,3 +1,14 @@
+.login {
+  width: 100%;
+  max-width: 400px;
+  margin: 10vh auto;
+  padding: 24px;
+  box-sizing: border-box;
+  border: 2px solid #1976d2;
+  border-radius: 4px;
+  text-align: center;
+}
+
 mat-form-field {
   display: block;
   margin: 10px 0;

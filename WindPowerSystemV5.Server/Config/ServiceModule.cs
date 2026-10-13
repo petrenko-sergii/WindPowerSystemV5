@@ -22,6 +22,7 @@ public static class ServiceModule
         services.AddScoped<ITurbineConfigSnapshotService, TurbineConfigSnapshotService>();
         services.AddScoped<ITurbineService, TurbineService>();
         services.AddScoped<ITurbineTypeService, TurbineTypeService>();
+        services.AddScoped<IAiChatBotAgent, AiChatBotAgent>();
         services.AddScoped<IWeatherAdvisorAgent, WeatherAdvisorAgent>();
         services.AddHttpClient<IWeatherLookupService, OpenMeteoWeatherService>();
     }

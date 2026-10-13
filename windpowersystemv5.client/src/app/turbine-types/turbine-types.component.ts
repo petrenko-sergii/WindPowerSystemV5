@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { TurbineType } from './turbine-type';
 import { TurbineTypeService } from './turbine-type.service';
 import { AuthService } from '../auth/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AskAiDialogComponent } from './ask-ai-dialog.component';
 
 @Component({
   selector: 'app-turbine-types',
@@ -14,7 +16,8 @@ export class TurbineTypesComponent implements OnInit {
 
   constructor(
     private turbineTypeService: TurbineTypeService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -23,6 +26,10 @@ export class TurbineTypesComponent implements OnInit {
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();
+  }
+
+  openAskAiDialog(): void {
+    this.dialog.open(AskAiDialogComponent, { width: '480px' });
   }
 
   downloadInfoFile(infoFileName: string) {

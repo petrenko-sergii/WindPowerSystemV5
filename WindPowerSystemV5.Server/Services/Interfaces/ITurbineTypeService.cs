@@ -10,4 +10,10 @@ public interface ITurbineTypeService
     Task<int> Create(TurbineTypeCreationRequest turbineTypeToCreate, IFormFile infoFile);
 
     Task<string> NameInfoFile(string fileName);
+
+    Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default);
+
+    Task<int> Count(TurbineTypeSearchCriteria criteria, CancellationToken cancellationToken = default);
+
+    Task<List<ManufacturerSummaryDTO>> GetManufacturers(CancellationToken cancellationToken = default);
 }
