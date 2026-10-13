@@ -10,4 +10,6 @@ public interface ITurbineTypeService
     Task<int> Create(TurbineTypeCreationRequest turbineTypeToCreate, IFormFile infoFile);
 
     Task<string> NameInfoFile(string fileName);
+
+    Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria);
 }

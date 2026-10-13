@@ -38,6 +38,11 @@ public class TurbineTypeService : ITurbineTypeService
         return turbineTypeDTO;
     }
 
+    public async Task<List<TurbineTypeDTO>> Search(TurbineTypeSearchCriteria criteria)
+    {
+        return await _turbineTypeRepository.Search(criteria);
+    }
+
     public async Task<int> Create(
         TurbineTypeCreationRequest turbineTypeToCreate,
         IFormFile infoFile)

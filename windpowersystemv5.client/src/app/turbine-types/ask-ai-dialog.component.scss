@@ -1,0 +1,32 @@
+// The dialog content scrolls (overflow: auto), so the floating outline label
+// of the form field is clipped unless there is room above it.
+mat-dialog-content {
+  padding-top: 12px;
+}
+
+mat-form-field {
+  width: 100%;
+  min-width: 320px;
+}
+
+.title-icon {
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.status.error {
+  color: #b00020;
+}
+
+.answer {
+  margin-top: 8px;
+  white-space: pre-line;
+}
+
+.turbine-type-list {
+  padding-left: 20px;
+}
+
+.turbine-type-details {
+  color: rgba(0, 0, 0, 0.6);
+}
