@@ -1,7 +1,9 @@
-// The dialog content scrolls (overflow: auto), so the floating outline label
-// of the form field is clipped unless there is room above it.
-mat-dialog-content {
-  padding-top: 12px;
+// The dialog content scrolls (overflow: auto) and Material removes its top padding right
+// after the title, so the floating outline label of the form field would be clipped.
+// Padding on this wrapper keeps the label inside the scroll area (a margin on the field
+// does not work: Material resets the margin of the content's first child).
+.question-field {
+  padding-top: 10px;
 }
 
 mat-form-field {

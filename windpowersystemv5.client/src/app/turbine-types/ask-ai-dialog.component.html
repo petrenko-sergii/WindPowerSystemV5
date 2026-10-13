@@ -3,17 +3,19 @@
   Ask AI
 </h2>
 <mat-dialog-content>
-  <mat-form-field appearance="outline">
-    <mat-label>Your question</mat-label>
-    <textarea matInput
-              rows="3"
-              cdkFocusInitial
-              [maxlength]="maxLength"
-              [formControl]="question"
-              (keydown.control.enter)="ask()"
-              placeholder="e.g. Which turbine type has the highest capacity?"></textarea>
-    <mat-hint align="end">{{question.value?.length ?? 0}} / {{maxLength}}</mat-hint>
-  </mat-form-field>
+  <div class="question-field">
+    <mat-form-field appearance="outline">
+      <mat-label>Your question</mat-label>
+      <textarea matInput
+                rows="3"
+                cdkFocusInitial
+                [maxlength]="maxLength"
+                [formControl]="question"
+                (keydown.control.enter)="ask()"
+                placeholder="e.g. Which turbine type has the highest capacity?"></textarea>
+      <mat-hint align="end">{{question.value?.length ?? 0}} / {{maxLength}}</mat-hint>
+    </mat-form-field>
+  </div>
 
   <p *ngIf="isLoading" class="status"><em>Thinking...</em></p>
   <p *ngIf="errorMessage" class="status error">{{errorMessage}}</p>
