@@ -34,8 +34,7 @@ public class WeatherAdvisorAgentTests
             MaxRetries = 0,
             HttpClient = new HttpClient(handler)
         };
-        var options = Options.Create(new AnthropicOptions { Model = "test-model" });
-        return new WeatherAdvisorAgent(client, options, _weatherLookup, NullLogger<WeatherAdvisorAgent>.Instance);
+        return new WeatherAdvisorAgent(client, _weatherLookup, NullLogger<WeatherAdvisorAgent>.Instance);
     }
 
     private static string MessageJson(string stopReason, string contentJson) =>
