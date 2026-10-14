@@ -46,7 +46,8 @@ process.stdin.on('end', () => {
   const cwd = data.cwd || process.cwd();
 
   // File tools: Read / Edit / Write / Grep
-  if (tool !== 'Bash') {
+  const isShell = tool === 'Bash' || tool === 'PowerShell';
+  if (!isShell) {
     for (const key of ['file_path', 'path', 'glob']) {
       if (typeof args[key] === 'string' && isSecretFile(args[key])) {
         block(`${tool} on a secrets file (${args[key]})`);
@@ -56,6 +57,11 @@ process.stdin.on('end', () => {
   }
 
   const command = args.command ?? '';
+
+  // dotnet user-secrets (set/remove/clear/list) reads or rewrites the secrets.json outside the repo
+  if (/\bdotnet(\.exe)?\s+(?:[^\n|;&]*\s)?user-secrets\b/i.test(command)) {
+    block('command uses "dotnet user-secrets"');
+  }
 
   // Any shell command that names a secrets file (cat, type, Get-Content, git add, curl @file, ...)
   const hits = secretTokens(command);
