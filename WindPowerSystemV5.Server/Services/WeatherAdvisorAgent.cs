@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Text.Json;
 using Anthropic;
 using Anthropic.Models.Messages;
-using Microsoft.Extensions.Options;
 using WindPowerSystemV5.Server.Config;
 using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.Services.Interfaces;
@@ -32,19 +31,18 @@ public class WeatherAdvisorAgent : IWeatherAdvisorAgent
 
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
+    private static readonly Model HaikuModel = Model.ClaudeHaiku4_5_20251001;
+
     private readonly AnthropicClient _client;
-    private readonly AnthropicOptions _options;
     private readonly IWeatherLookupService _weatherLookup;
     private readonly ILogger<WeatherAdvisorAgent> _logger;
 
     public WeatherAdvisorAgent(
         AnthropicClient client,
-        IOptions<AnthropicOptions> options,
         IWeatherLookupService weatherLookup,
         ILogger<WeatherAdvisorAgent> logger)
     {
         _client = client;
-        _options = options.Value;
         _weatherLookup = weatherLookup;
         _logger = logger;
     }
@@ -81,7 +79,7 @@ public class WeatherAdvisorAgent : IWeatherAdvisorAgent
             var stopwatch = Stopwatch.StartNew();
             var response = await _client.Messages.Create(new MessageCreateParams
             {
-                Model = _options.Model,
+                Model = HaikuModel,
                 MaxTokens = 2048,
                 System = SystemPrompt,
                 Tools = [BuildWeatherTool()],
@@ -94,8 +92,8 @@ public class WeatherAdvisorAgent : IWeatherAdvisorAgent
             stopwatch.Stop();
 
             _logger.LogInformation(
-                "Claude request {Step}/{MaxSteps} ({Model}): {InputTokens} input tokens, {OutputTokens} output tokens, {LatencyMs} ms",
-                i + 1, MaxAgentIterations, _options.Model,
+                "Claude request {Step}/{MaxSteps} ({Model}): {InputTokens} input tokens, {OutputTokens} output tokens, latency: {LatencyMs} ms",
+                i + 1, MaxAgentIterations, HaikuModel,
                 response.Usage.InputTokens, response.Usage.OutputTokens, stopwatch.ElapsedMilliseconds);
 
             if (response.StopReason == "refusal")

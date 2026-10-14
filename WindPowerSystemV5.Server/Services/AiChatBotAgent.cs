@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Text.Json;
 using Anthropic;
 using Anthropic.Models.Messages;
-using Microsoft.Extensions.Options;
 using WindPowerSystemV5.Server.Config;
 using WindPowerSystemV5.Server.Data.DTOs;
 using WindPowerSystemV5.Server.Services.Interfaces;
@@ -51,19 +50,18 @@ public class AiChatBotAgent : IAiChatBotAgent
     private static readonly Tool ListManufacturersTool = BuildListManufacturersTool();
     private static readonly JsonOutputFormat AnswerFormat = BuildAnswerFormat();
 
+    private static readonly Model SonnetModel = Model.ClaudeSonnet5_5;
+
     private readonly AnthropicClient _client;
-    private readonly AnthropicOptions _options;
     private readonly ITurbineTypeService _turbineTypeService;
     private readonly ILogger<AiChatBotAgent> _logger;
 
     public AiChatBotAgent(
         AnthropicClient client,
-        IOptions<AnthropicOptions> options,
         ITurbineTypeService turbineTypeService,
         ILogger<AiChatBotAgent> logger)
     {
         _client = client;
-        _options = options.Value;
         _turbineTypeService = turbineTypeService;
         _logger = logger;
     }
@@ -99,7 +97,7 @@ public class AiChatBotAgent : IAiChatBotAgent
             var stopwatch = Stopwatch.StartNew();
             var response = await _client.Messages.Create(new MessageCreateParams
             {
-                Model = _options.Model,
+                Model = SonnetModel,
                 MaxTokens = MaxOutputTokens,
                 System = SystemPrompt,
                 Tools = [SearchTool, ListManufacturersTool],
@@ -113,8 +111,8 @@ public class AiChatBotAgent : IAiChatBotAgent
             stopwatch.Stop();
 
             _logger.LogInformation(
-                "Claude request {Step}/{MaxSteps} ({Model}): {InputTokens} input tokens, {OutputTokens} output tokens, stop reason {StopReason}, {LatencyMs} ms",
-                i + 1, MaxAgentIterations, _options.Model,
+                "Claude request {Step}/{MaxSteps} ({Model}): {InputTokens} input tokens, {OutputTokens} output tokens, stop reason {StopReason}, latency: {LatencyMs} ms",
+                i + 1, MaxAgentIterations, SonnetModel,
                 response.Usage.InputTokens, response.Usage.OutputTokens, response.StopReason, stopwatch.ElapsedMilliseconds);
 
             if (response.StopReason == "refusal")

@@ -35,8 +35,7 @@ public class AiChatBotAgentTests
             MaxRetries = 0,
             HttpClient = new HttpClient(handler)
         };
-        var options = Options.Create(new AnthropicOptions { Model = "test-model" });
-        return new AiChatBotAgent(client, options, _turbineTypeService, NullLogger<AiChatBotAgent>.Instance);
+        return new AiChatBotAgent(client, _turbineTypeService, NullLogger<AiChatBotAgent>.Instance);
     }
 
     private static string MessageJson(string stopReason, string contentJson) =>

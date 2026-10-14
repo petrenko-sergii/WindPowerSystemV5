@@ -8,6 +8,4 @@ public class AnthropicOptions
     /// When empty (or the placeholder), the SDK falls back to the ANTHROPIC_API_KEY environment variable.
     /// </summary>
     public string? ApiKey { get; set; }
-
-    public string Model { get; set; } = null!;
 }
